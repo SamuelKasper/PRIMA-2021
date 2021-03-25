@@ -42,8 +42,10 @@ namespace L01_FirstFudge{
 
     function update(_event: Event): void {
         ///um Mesh (weclhes am Knoten hängt) zu drehen
-        let rotSpeed: number = 90 / 1000; //90 Grad pro Sek -> Frame rate unabhängig -> Zeitbasiert
-        node.getComponent(fc.ComponentMesh).mtxPivot.rotateZ(rotSpeed * fc.Loop.timeFrameReal); 
+        let rotSpeed: number = 90; //90 Grad pro Sek 
+        //Frame rate unabhängig -> Zeitbasiert
+        let timeSinceLastFrame: number = fc.Loop.timeFrameReal / 1000;
+        node.getComponent(fc.ComponentMesh).mtxPivot.rotateZ(rotSpeed * timeSinceLastFrame); 
         viewport.draw();
     }
 }
