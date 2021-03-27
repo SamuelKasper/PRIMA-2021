@@ -60,7 +60,7 @@ namespace L02_spaceInvaders {
         characterNodeTurret.getComponent(fc.ComponentMesh).mtxPivot.scaleX(0.2);
         characterNodeTurret.getComponent(fc.ComponentMesh).mtxPivot.scaleY(0.6);
     }
-
+    /*
     function createBarrier(): void {
         //Mesh erzeugen
         let barrierMesh: fc.MeshQuad = new fc.MeshQuad("barrierMesh");
@@ -78,6 +78,55 @@ namespace L02_spaceInvaders {
             barriere.getComponent(fc.ComponentMesh).mtxPivot.translateX(-5 + posBarriere);
             posBarriere = posBarriere + 2.5;
             barrierNode.addChild(barriere);
+        }
+    }*/
+
+    function createBarrier(): void {
+        //Mesh erzeugen
+        let barrierMesh: fc.MeshQuad = new fc.MeshQuad("barrierMesh");
+        //Material erzeugen
+        let material: fc.Material = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(0, 1, 0, 1)));
+
+        //Position Barriere
+        let posBarriere: number = 0; //verschiebung der großen Blöcke
+        let posBarrierColumn: number = 0; //verschiebung nach y im großen Block
+        let posBarrierRow: number = 0; //verschiebung nach x im großen Block
+
+        /*** Barrieren Block erzeugen ***/
+        for (let i: number = 0; i < 5; i++) {
+            //verschiebung nach rechts
+            posBarriere += 10;
+            //zurücksetzten der reihenverschiebung
+            posBarrierRow = 0;
+
+            /*** Reihen erzeugen ***/
+            for ( let row: number = 0; row < 5; row++) {
+                //verschiebung nach rechts
+                posBarrierRow += 1;
+                //zurücksetzen der Höhe
+                posBarrierColumn = 0;
+
+                /*** Spalten erzeugen ***/
+                for (let k: number = 0; k < 4; k++) {
+                    //Spalte erzeugen
+                    let barrierBlock: fc.Node = new fc.Node(`barrier-${k}`);
+                    barrierBlock.addComponent(new fc.ComponentMesh(barrierMesh));
+                    barrierBlock.addComponent(new fc.ComponentMaterial(material));
+                    //Breite & Höhe 0.3*4=1.2
+                    barrierBlock.getComponent(fc.ComponentMesh).mtxPivot.scaleX(0.3);
+                    barrierBlock.getComponent(fc.ComponentMesh).mtxPivot.scaleY(0.3);
+                    
+                    //Verschieben nach Y der Nächsten Barriere
+                    barrierBlock.getComponent(fc.ComponentMesh).mtxPivot.translateY(7 - posBarrierColumn);
+                    posBarrierColumn += 1;
+
+                    //Verschieben nach X der Nächsten Barriere
+                    barrierBlock.getComponent(fc.ComponentMesh).mtxPivot.translateX(-27 - posBarrierRow + posBarriere);
+                    
+                    //block an bariereNode anhängen
+                    barrierNode.addChild(barrierBlock);
+                }
+            }
         }
     }
 
