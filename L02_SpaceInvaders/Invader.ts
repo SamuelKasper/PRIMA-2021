@@ -2,6 +2,9 @@ namespace L02_spaceInvaders {
     import fc = FudgeCore;
     export class Invader extends fc.Node {
         constructor(_x: number, _y: number, _name: string ) {
+            let enemieMesh: fc.MeshQuad = new fc.MeshQuad("enemieMesh");
+            let material: fc.Material = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(1, 1, 0, 1)));
+
             super(_name); 
             this.addComponent(new fc.ComponentMesh(enemieMesh));
             this.addComponent(new fc.ComponentMaterial(material));

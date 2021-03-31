@@ -7,18 +7,6 @@ var L02_spaceInvaders;
     let rootNode = new fc.Node("root");
     let barrierNode = new fc.Node("barrier");
     let enemieNode = new fc.Node("enemie");
-    /*** Invaders ***/
-    L02_spaceInvaders.enemieMesh = new fc.MeshQuad("enemieMesh");
-    L02_spaceInvaders.material = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(1, 1, 0, 1)));
-    /*** Mutterschiff***/
-    L02_spaceInvaders.materialBoss = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(1, 0, 0, 1)));
-    /*** Barriere ***/
-    L02_spaceInvaders.barrierMesh = new fc.MeshQuad("barrierMesh");
-    L02_spaceInvaders.materialBarrier = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(0, 1, 0, 1)));
-    /*** Character ***/
-    L02_spaceInvaders.characterTurretMesh = new fc.MeshQuad("characterTurretMesh");
-    L02_spaceInvaders.characterMesh = new fc.MeshQuad("characterMesh");
-    L02_spaceInvaders.characterMaterial = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(0, 1, 0, 1)));
     function init(_event) {
         //Canvas holen und speichern
         const canvas = document.querySelector("canvas");

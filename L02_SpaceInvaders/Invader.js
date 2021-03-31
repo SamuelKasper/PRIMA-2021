@@ -4,9 +4,11 @@ var L02_spaceInvaders;
     var fc = FudgeCore;
     class Invader extends fc.Node {
         constructor(_x, _y, _name) {
+            let enemieMesh = new fc.MeshQuad("enemieMesh");
+            let material = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(1, 1, 0, 1)));
             super(_name);
-            this.addComponent(new fc.ComponentMesh(L02_spaceInvaders.enemieMesh));
-            this.addComponent(new fc.ComponentMaterial(L02_spaceInvaders.material));
+            this.addComponent(new fc.ComponentMesh(enemieMesh));
+            this.addComponent(new fc.ComponentMaterial(material));
             //Skalierung Gegner
             this.getComponent(fc.ComponentMesh).mtxPivot.scaleX(1);
             this.getComponent(fc.ComponentMesh).mtxPivot.scaleY(0.6);

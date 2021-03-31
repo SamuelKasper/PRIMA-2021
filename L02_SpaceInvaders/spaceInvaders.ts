@@ -7,22 +7,6 @@ namespace L02_spaceInvaders {
     let barrierNode: fc.Node = new fc.Node("barrier");
     let enemieNode: fc.Node = new fc.Node("enemie");
 
-    /*** Invaders ***/
-    export let enemieMesh: fc.MeshQuad = new fc.MeshQuad("enemieMesh");
-    export let material: fc.Material = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(1, 1, 0, 1)));
-
-    /*** Mutterschiff***/
-    export let materialBoss: fc.Material = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(1, 0, 0, 1)));
-
-    /*** Barriere ***/
-    export let barrierMesh: fc.MeshQuad = new fc.MeshQuad("barrierMesh");
-    export let materialBarrier: fc.Material = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(0, 1, 0, 1)));
-    
-    /*** Character ***/
-    export let characterTurretMesh: fc.MeshQuad = new fc.MeshQuad("characterTurretMesh");
-    export let characterMesh: fc.MeshQuad = new fc.MeshQuad("characterMesh");
-    export let characterMaterial: fc.Material = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(0, 1, 0, 1)));
-
     function init(_event: Event): void {
         //Canvas holen und speichern
         const canvas: HTMLCanvasElement = document.querySelector("canvas");

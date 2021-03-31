@@ -2,6 +2,9 @@ namespace L02_spaceInvaders {
     import fc = FudgeCore;
     export class Barrier extends fc.Node {
         constructor(_x: number, _y: number, _barriere: number ) {
+            let barrierMesh: fc.MeshQuad = new fc.MeshQuad("barrierMesh");
+            let materialBarrier: fc.Material = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(0, 1, 0, 1)));
+
             super(`barrier: ${_barriere / 10}, block: ${_x}-${_y}`); 
             this.addComponent(new fc.ComponentMesh(barrierMesh));
             this.addComponent(new fc.ComponentMaterial(materialBarrier));
