@@ -6,6 +6,10 @@ namespace L02_spaceInvaders {
     let rootNode: fc.Node = new fc.Node("root");
     let barrierNode: fc.Node = new fc.Node("barrier");
     let enemieNode: fc.Node = new fc.Node("enemie");
+    let characterNode: Character;
+    let speedCharacter: number = 1;
+
+    
 
     function init(_event: Event): void {
         //Canvas holen und speichern
@@ -30,10 +34,13 @@ namespace L02_spaceInvaders {
         //viewport initialisieren
         viewport.initialize("Viewport", rootNode, comCamera, canvas);
         viewport.draw();
+
+        fc.Loop.start(fc.LOOP_MODE.TIME_REAL, 30);
+        fc.Loop.addEventListener(fc.EVENT.LOOP_FRAME, update);
     }
 
     function createCharacter(): void {
-        let characterNode: Character = new Character();
+        characterNode = new Character();
         rootNode.addChild(characterNode);
     }
 
@@ -94,4 +101,16 @@ namespace L02_spaceInvaders {
         }
     }
 
+    function update(_event: Event): void {
+        let offset: number = speedCharacter * fc.Loop.timeFrameReal / 1000;
+        if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.A, fc.KEYBOARD_CODE.ARROW_LEFT])) {
+            characterNode.mtxLocal.translateX(-offset);
+        }
+
+        if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.D, fc.KEYBOARD_CODE.ARROW_RIGHT])) {
+            characterNode.mtxLocal.translateX(+offset);
+        }
+
+        viewport.draw();
+    }
 }

@@ -15,6 +15,7 @@ var L02_spaceInvaders;
             this.addComponent(new fc.ComponentMaterial(characterMaterial));
             //Skalierung Gegner
             this.getComponent(fc.ComponentMesh).mtxPivot.scaleY(0.3);
+            this.addComponent(new fc.ComponentTransform);
             //Mesh & Material character turret
             //Turret an character hängen
             this.addChild(characterNodeTurret);
@@ -26,4 +27,4 @@ var L02_spaceInvaders;
     }
     L02_spaceInvaders.Character = Character;
 })(L02_spaceInvaders || (L02_spaceInvaders = {}));
-//# sourceMappingURL=character.js.map
+//# sourceMappingURL=Character.js.map

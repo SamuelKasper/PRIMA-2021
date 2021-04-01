@@ -15,6 +15,7 @@ namespace L02_spaceInvaders {
             this.addComponent(new fc.ComponentMaterial(characterMaterial));
             //Skalierung Gegner
             this.getComponent(fc.ComponentMesh).mtxPivot.scaleY(0.3);
+            this.addComponent(new fc.ComponentTransform);
 
 
             //Mesh & Material character turret

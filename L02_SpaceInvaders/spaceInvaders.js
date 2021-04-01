@@ -7,6 +7,8 @@ var L02_spaceInvaders;
     let rootNode = new fc.Node("root");
     let barrierNode = new fc.Node("barrier");
     let enemieNode = new fc.Node("enemie");
+    let characterNode;
+    let speedCharacter = 1;
     function init(_event) {
         //Canvas holen und speichern
         const canvas = document.querySelector("canvas");
@@ -25,9 +27,11 @@ var L02_spaceInvaders;
         //viewport initialisieren
         viewport.initialize("Viewport", rootNode, comCamera, canvas);
         viewport.draw();
+        fc.Loop.start(fc.LOOP_MODE.TIME_REAL, 30);
+        fc.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
     }
     function createCharacter() {
-        let characterNode = new L02_spaceInvaders.Character();
+        characterNode = new L02_spaceInvaders.Character();
         rootNode.addChild(characterNode);
     }
     function createBarrier() {
@@ -78,6 +82,16 @@ var L02_spaceInvaders;
                 enemieNode.addChild(enemie);
             }
         }
+    }
+    function update(_event) {
+        let offset = speedCharacter * fc.Loop.timeFrameReal / 1000;
+        if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.A, fc.KEYBOARD_CODE.ARROW_LEFT])) {
+            characterNode.mtxLocal.translateX(-offset);
+        }
+        if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.D, fc.KEYBOARD_CODE.ARROW_RIGHT])) {
+            characterNode.mtxLocal.translateX(+offset);
+        }
+        viewport.draw();
     }
 })(L02_spaceInvaders || (L02_spaceInvaders = {}));
 //# sourceMappingURL=spaceInvaders.js.map
