@@ -7,6 +7,7 @@ var L02_spaceInvaders;
     let rootNode = new fc.Node("root");
     let barrierNode = new fc.Node("barrier");
     let enemieNode = new fc.Node("enemie");
+    let projectileNode = new fc.Node("projectile");
     let characterNode;
     let speedCharacter = 1;
     function init(_event) {
@@ -20,6 +21,7 @@ var L02_spaceInvaders;
         //Nodes an rootNode hängen
         rootNode.addChild(barrierNode);
         rootNode.addChild(enemieNode);
+        rootNode.addChild(projectileNode);
         createCharacter();
         createBarrier();
         createEnemie();
@@ -90,6 +92,13 @@ var L02_spaceInvaders;
         }
         if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.D, fc.KEYBOARD_CODE.ARROW_RIGHT])) {
             characterNode.mtxLocal.translateX(+offset);
+        }
+        if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.SPACE])) {
+            let projectile = new L02_spaceInvaders.Projectile(characterNode.mtxLocal.translation.x, characterNode.mtxLocal.translation.y);
+            projectileNode.addChild(projectile);
+        }
+        for (let iProjectile of projectileNode.getChildren()) {
+            iProjectile.shot();
         }
         viewport.draw();
     }

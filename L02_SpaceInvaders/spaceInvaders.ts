@@ -6,6 +6,7 @@ namespace L02_spaceInvaders {
     let rootNode: fc.Node = new fc.Node("root");
     let barrierNode: fc.Node = new fc.Node("barrier");
     let enemieNode: fc.Node = new fc.Node("enemie");
+    let projectileNode: fc.Node = new fc.Node("projectile");
     let characterNode: Character;
     let speedCharacter: number = 1;
 
@@ -24,6 +25,7 @@ namespace L02_spaceInvaders {
         //Nodes an rootNode hängen
         rootNode.addChild(barrierNode);
         rootNode.addChild(enemieNode);
+        rootNode.addChild(projectileNode);
 
         createCharacter();
         createBarrier();
@@ -101,6 +103,8 @@ namespace L02_spaceInvaders {
         }
     }
 
+    
+
     function update(_event: Event): void {
         let offset: number = speedCharacter * fc.Loop.timeFrameReal / 1000;
         if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.A, fc.KEYBOARD_CODE.ARROW_LEFT])) {
@@ -110,6 +114,16 @@ namespace L02_spaceInvaders {
         if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.D, fc.KEYBOARD_CODE.ARROW_RIGHT])) {
             characterNode.mtxLocal.translateX(+offset);
         }
+
+        if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.SPACE])) {
+            let projectile: Projectile  = new Projectile(characterNode.mtxLocal.translation.x, characterNode.mtxLocal.translation.y);
+            projectileNode.addChild(projectile);
+        }
+
+        for (let iProjectile of projectileNode.getChildren() as Projectile[]) {
+            iProjectile.shot();
+        }
+
 
         viewport.draw();
     }
