@@ -3,15 +3,20 @@ namespace L02_spaceInvaders {
 
     window.addEventListener("load", init);
     let viewport: fc.Viewport = new fc.Viewport();
+    //Haupt Node
     let rootNode: fc.Node = new fc.Node("root");
+    //Barriere
     let barrierNode: fc.Node = new fc.Node("barrier");
+    //Invaders (+ Mutterschiff)
     let enemieNode: fc.Node = new fc.Node("enemie");
-    let projectileNode: fc.Node = new fc.Node("projectile");
+    //Charakter
     let characterNode: Character;
     let speedCharacter: number = 1;
-
+    //Projektile
+    let projectileNode: fc.Node = new fc.Node("projectile");
+    let newProjectile: Boolean  = true;
+    let reloadeTime: number = 2000;
     
-
     function init(_event: Event): void {
         //Canvas holen und speichern
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
@@ -103,7 +108,10 @@ namespace L02_spaceInvaders {
         }
     }
 
-    
+    //Erlaubt feuern eines neuen Projectiles 
+    function checkProjectile(): void {
+        newProjectile = true;
+    }
 
     function update(_event: Event): void {
         let offset: number = speedCharacter * fc.Loop.timeFrameReal / 1000;
@@ -115,9 +123,14 @@ namespace L02_spaceInvaders {
             characterNode.mtxLocal.translateX(+offset);
         }
 
+        //Als keydown event außerhalb der update
         if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.SPACE])) {
-            let projectile: Projectile  = new Projectile(characterNode.mtxLocal.translation.x, characterNode.mtxLocal.translation.y);
-            projectileNode.addChild(projectile);
+                if (newProjectile == true) {
+                let projectile: Projectile  = new Projectile(characterNode.mtxLocal.translation.x, characterNode.mtxLocal.translation.y);
+                projectileNode.addChild(projectile);
+                newProjectile = false;
+                fc.Time.game.setTimer(reloadeTime, 1, checkProjectile);
+            }
         }
 
         for (let iProjectile of projectileNode.getChildren() as Projectile[]) {

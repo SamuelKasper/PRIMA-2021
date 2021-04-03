@@ -4,12 +4,19 @@ var L02_spaceInvaders;
     var fc = FudgeCore;
     window.addEventListener("load", init);
     let viewport = new fc.Viewport();
+    //Haupt Node
     let rootNode = new fc.Node("root");
+    //Barriere
     let barrierNode = new fc.Node("barrier");
+    //Invaders (+ Mutterschiff)
     let enemieNode = new fc.Node("enemie");
-    let projectileNode = new fc.Node("projectile");
+    //Charakter
     let characterNode;
     let speedCharacter = 1;
+    //Projektile
+    let projectileNode = new fc.Node("projectile");
+    let newProjectile = true;
+    let reloadeTime = 2000;
     function init(_event) {
         //Canvas holen und speichern
         const canvas = document.querySelector("canvas");
@@ -85,6 +92,10 @@ var L02_spaceInvaders;
             }
         }
     }
+    //Erlaubt feuern eines neuen Projectiles 
+    function checkProjectile() {
+        newProjectile = true;
+    }
     function update(_event) {
         let offset = speedCharacter * fc.Loop.timeFrameReal / 1000;
         if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.A, fc.KEYBOARD_CODE.ARROW_LEFT])) {
@@ -93,9 +104,14 @@ var L02_spaceInvaders;
         if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.D, fc.KEYBOARD_CODE.ARROW_RIGHT])) {
             characterNode.mtxLocal.translateX(+offset);
         }
+        //Als keydown event außerhalb der update
         if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.SPACE])) {
-            let projectile = new L02_spaceInvaders.Projectile(characterNode.mtxLocal.translation.x, characterNode.mtxLocal.translation.y);
-            projectileNode.addChild(projectile);
+            if (newProjectile == true) {
+                let projectile = new L02_spaceInvaders.Projectile(characterNode.mtxLocal.translation.x, characterNode.mtxLocal.translation.y);
+                projectileNode.addChild(projectile);
+                newProjectile = false;
+                fc.Time.game.setTimer(reloadeTime, 1, checkProjectile);
+            }
         }
         for (let iProjectile of projectileNode.getChildren()) {
             iProjectile.shot();
