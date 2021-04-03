@@ -9,18 +9,18 @@ namespace L02_spaceInvaders {
             this.addComponent(new fc.ComponentMesh(projectileMesh));
             this.addComponent(new fc.ComponentMaterial(materialProjectile));
             //Skalierung
-            this.getComponent(fc.ComponentMesh).mtxPivot.scaleX(0.2);
-            this.getComponent(fc.ComponentMesh).mtxPivot.scaleY(1);
+            this.getComponent(fc.ComponentMesh).mtxPivot.scaleX(0.1);
+            this.getComponent(fc.ComponentMesh).mtxPivot.scaleY(0.6);
             
             //Position
             this.addComponent(new fc.ComponentTransform);
-            this.mtxLocal.translateY(_y);
+            this.mtxLocal.translateY(_y + 0.2); // 0.2 damit der Laser nicht im Raumschiff startet
             this.mtxLocal.translateX(_x);
             
         }
 
         public shot(): void {
-            this.mtxLocal.translateY(1);
+            this.mtxLocal.translateY(0.4);
         }
     }
 
