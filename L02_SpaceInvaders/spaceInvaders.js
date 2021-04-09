@@ -17,6 +17,10 @@ var L02_spaceInvaders;
     let projectileNode = new fc.Node("projectile");
     let newProjectile = true;
     let reloadeTime = 2000;
+    //Invader Bewegen
+    let allowMove = true;
+    let direction = "";
+    let down = true;
     function init(_event) {
         //Canvas holen und speichern
         const canvas = document.querySelector("canvas");
@@ -71,6 +75,7 @@ var L02_spaceInvaders;
         }
     }
     function createEnemie() {
+        enemieNode.addComponent(new fc.ComponentTransform());
         /*** Mutterschiff ***/
         let posxMothership = 0;
         let posyMothership = 8.7;
@@ -95,6 +100,111 @@ var L02_spaceInvaders;
     function checkProjectile() {
         newProjectile = true;
     }
+    function collisionDetection() {
+        for (let projectile of projectileNode.getChildren()) {
+            for (let enemie of enemieNode.getChildren()) {
+                if (projectile.checkCollision(enemie)) {
+                    console.log("collision detected");
+                    projectileNode.removeChild(projectile);
+                    enemieNode.removeChild(enemie);
+                }
+            }
+        }
+        for (let projectile of projectileNode.getChildren()) {
+            for (let barriere of barrierNode.getChildren()) {
+                if (projectile.checkCollision(barriere)) {
+                    console.log("collision detected");
+                    projectileNode.removeChild(projectile);
+                    barrierNode.removeChild(barriere);
+                }
+            }
+        }
+    }
+    function invaderEnableMove() {
+        allowMove = true;
+        console.log(enemieNode.mtxLocal.translation.x);
+        console.log("Local: " + enemieNode.getChild(1).mtxLocal.translation.x);
+    }
+    function moveInvaders() {
+        //Rect Position setzen
+        for (let enemie of enemieNode.getChildren()) {
+            enemie.setRectPosition();
+        }
+        //Bewegen
+        if (allowMove == true) {
+            //Richtung
+            if (down == true) {
+                if (enemieNode.getChild(10).mtxLocal.translation.x >= 7.5) {
+                    for (let enemie of enemieNode.getChildren()) {
+                        direction = "left";
+                        enemie.mtxLocal.translateY(-0.3);
+                        allowMove = false;
+                        down = false;
+                    }
+                }
+                if (enemieNode.getChild(1).mtxLocal.translation.x <= -7.5) {
+                    for (let enemie of enemieNode.getChildren()) {
+                        direction = "right";
+                        enemie.mtxLocal.translateY(-0.3);
+                        allowMove = false;
+                        down = false;
+                    }
+                }
+            }
+            //Bewegen
+            if (allowMove == true) { //damit runter und seitlich nicht in einem passiert
+                for (let enemie of enemieNode.getChildren()) {
+                    if (direction == "left") {
+                        enemie.mtxLocal.translateX(-0.3);
+                    }
+                    else {
+                        enemie.mtxLocal.translateX(0.3);
+                    }
+                    down = true;
+                }
+            }
+            allowMove = false;
+            fc.Time.game.setTimer(2500, 1, invaderEnableMove);
+        }
+    }
+    /*
+    function moveInvaders(): void {
+        //Rect Position setzen
+        for (let enemie of enemieNode.getChildren() as Invader[]) {
+            enemie.setRectPosition();
+        }
+
+        //Bewegen
+        if (allowMove == true) {
+            //Richtung
+            if (down == true) {
+                if (enemieNode.mtxLocal.translation.x >= 1.5) {
+                    direction = "left";
+                    enemieNode.mtxLocal.translateY(-0.5);
+                    allowMove = false;
+                    down = false;
+                }
+
+                if (enemieNode.mtxLocal.translation.x <= -0.3) {
+                    direction = "right";
+                    enemieNode.mtxLocal.translateY(-0.5);
+                    allowMove = false;
+                    down = false;
+                }
+            }
+            //Bewegen
+            if (allowMove == true) { //damit runter und seitlich nicht in einem passiert
+                if (direction == "left") {
+                    enemieNode.mtxLocal.translateX(-0.3);
+                } else {
+                    enemieNode.mtxLocal.translateX(0.3);
+                }
+                down = true;
+            }
+            allowMove = false;
+            fc.Time.game.setTimer(2500, 1, invaderEnableMove);
+        }
+    }*/
     function update(_event) {
         let offset = speedCharacter * fc.Loop.timeFrameReal / 1000;
         if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.A, fc.KEYBOARD_CODE.ARROW_LEFT])) {
@@ -118,28 +228,11 @@ var L02_spaceInvaders;
                 projectileNode.removeChild(projectile);
             }
         }
+        //Kollision Projektile / Invaders / Barriere
         collisionDetection();
+        //Invaders Bewegen
+        moveInvaders();
         viewport.draw();
-    }
-    function collisionDetection() {
-        for (let projectile of projectileNode.getChildren()) {
-            for (let enemie of enemieNode.getChildren()) {
-                if (projectile.checkCollision(enemie)) {
-                    console.log("collision detected");
-                    projectileNode.removeChild(projectile);
-                    enemieNode.removeChild(enemie);
-                }
-            }
-        }
-        for (let projectile of projectileNode.getChildren()) {
-            for (let barriere of barrierNode.getChildren()) {
-                if (projectile.checkCollision(barriere)) {
-                    console.log("collision detected");
-                    projectileNode.removeChild(projectile);
-                    barrierNode.removeChild(barriere);
-                }
-            }
-        }
     }
 })(L02_spaceInvaders || (L02_spaceInvaders = {}));
 //# sourceMappingURL=spaceInvaders.js.map

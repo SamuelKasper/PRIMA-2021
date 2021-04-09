@@ -16,6 +16,10 @@ namespace L02_spaceInvaders {
     let projectileNode: fc.Node = new fc.Node("projectile");
     let newProjectile: Boolean = true;
     let reloadeTime: number = 2000;
+    //Invader Bewegen
+    let allowMove: Boolean = true;
+    let direction: String = "";
+    let down: Boolean = true;
 
     function init(_event: Event): void {
         //Canvas holen und speichern
@@ -83,6 +87,8 @@ namespace L02_spaceInvaders {
     }
 
     function createEnemie(): void {
+        enemieNode.addComponent(new fc.ComponentTransform());
+
         /*** Mutterschiff ***/
         let posxMothership: number = 0;
         let posyMothership: number = 8.7;
@@ -112,6 +118,119 @@ namespace L02_spaceInvaders {
         newProjectile = true;
     }
 
+
+    function collisionDetection(): void {
+        for (let projectile of projectileNode.getChildren() as Projectile[]) {
+            for (let enemie of enemieNode.getChildren() as Invader[]) {
+                if (projectile.checkCollision(enemie)) {
+                    console.log("collision detected");
+                    projectileNode.removeChild(projectile);
+                    enemieNode.removeChild(enemie);
+                }
+            }
+        }
+
+        for (let projectile of projectileNode.getChildren() as Projectile[]) {
+            for (let barriere of barrierNode.getChildren() as Barrier[]) {
+                if (projectile.checkCollision(barriere)) {
+                    console.log("collision detected");
+                    projectileNode.removeChild(projectile);
+                    barrierNode.removeChild(barriere);
+                }
+            }
+        }
+    }
+
+    function invaderEnableMove(): void {
+        allowMove = true;
+        console.log(enemieNode.mtxLocal.translation.x);
+        console.log("Local: " + enemieNode.getChild(1).mtxLocal.translation.x);
+    }
+
+    function moveInvaders(): void {
+        //Rect Position setzen
+        for (let enemie of enemieNode.getChildren() as Invader[]) {
+            enemie.setRectPosition();
+        }
+
+        //Bewegen
+        if (allowMove == true) {
+            //Richtung
+            if (down == true) {
+
+                if (enemieNode.getChild(10).mtxLocal.translation.x >= 7.5) {
+                    for (let enemie of enemieNode.getChildren() as Invader[]) {
+                        direction = "left";
+                        enemie.mtxLocal.translateY(-0.3);
+                        allowMove = false;
+                        down = false;
+                    }
+                }
+
+                if (enemieNode.getChild(1).mtxLocal.translation.x <= -7.5) {
+                    for (let enemie of enemieNode.getChildren() as Invader[]) {
+                        direction = "right";
+                        enemie.mtxLocal.translateY(-0.3);
+                        allowMove = false;
+                        down = false;
+                    }
+                }
+            }
+            //Bewegen
+            if (allowMove == true) { //damit runter und seitlich nicht in einem passiert
+                for (let enemie of enemieNode.getChildren() as Invader[]) {
+                    if (direction == "left") {
+                        enemie.mtxLocal.translateX(-0.3);
+                    } else {
+                        enemie.mtxLocal.translateX(0.3);
+                    }
+                    down = true;
+                }
+            }
+            allowMove = false;
+            fc.Time.game.setTimer(2500, 1, invaderEnableMove);
+        }
+    }
+
+    /*
+    function moveInvaders(): void {
+        //Rect Position setzen
+        for (let enemie of enemieNode.getChildren() as Invader[]) {
+            enemie.setRectPosition();
+        }
+
+        //Bewegen
+        if (allowMove == true) {
+            //Richtung
+            if (down == true) {
+                if (enemieNode.mtxLocal.translation.x >= 1.5) {
+                    direction = "left";
+                    enemieNode.mtxLocal.translateY(-0.5);
+                    allowMove = false;
+                    down = false;
+                }
+
+                if (enemieNode.mtxLocal.translation.x <= -0.3) {
+                    direction = "right";
+                    enemieNode.mtxLocal.translateY(-0.5);
+                    allowMove = false;
+                    down = false;
+                }
+            }
+            //Bewegen
+            if (allowMove == true) { //damit runter und seitlich nicht in einem passiert
+                if (direction == "left") {
+                    enemieNode.mtxLocal.translateX(-0.3);
+                } else {
+                    enemieNode.mtxLocal.translateX(0.3);
+                }
+                down = true;
+            }
+            allowMove = false;
+            fc.Time.game.setTimer(2500, 1, invaderEnableMove);
+        }
+    }*/
+
     function update(_event: Event): void {
         let offset: number = speedCharacter * fc.Loop.timeFrameReal / 1000;
         if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.A, fc.KEYBOARD_CODE.ARROW_LEFT])) {
@@ -139,29 +258,13 @@ namespace L02_spaceInvaders {
             }
         }
 
+        //Kollision Projektile / Invaders / Barriere
         collisionDetection();
+
+        //Invaders Bewegen
+        moveInvaders();
+
         viewport.draw();
     }
 
-    function collisionDetection(): void {
-        for (let projectile of projectileNode.getChildren() as Projectile[]) {
-            for (let enemie of enemieNode.getChildren() as Invader[]) {
-                if (projectile.checkCollision(enemie)) {
-                    console.log("collision detected");
-                    projectileNode.removeChild(projectile);
-                    enemieNode.removeChild(enemie);
-                }
-            }
-        }
-
-        for (let projectile of projectileNode.getChildren() as Projectile[]) {
-            for (let barriere of barrierNode.getChildren() as Barrier[]) {
-                if (projectile.checkCollision(barriere)) {
-                    console.log("collision detected");
-                    projectileNode.removeChild(projectile);
-                    barrierNode.removeChild(barriere);
-                }
-            }
-        }
-    }
 }
