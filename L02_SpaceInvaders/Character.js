@@ -2,27 +2,18 @@
 var L02_spaceInvaders;
 (function (L02_spaceInvaders) {
     var fc = FudgeCore;
-    class Character extends fc.Node {
+    class Character extends L02_spaceInvaders.QuadNode {
         constructor() {
-            let characterTurretMesh = new fc.MeshQuad("characterTurretMesh");
-            let characterMesh = new fc.MeshQuad("characterMesh");
-            let characterMaterial = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(0, 1, 0, 1)));
-            super("character");
-            //Lokale Variablen
+            super("character", new fc.Vector2(0, 0), new fc.Vector2(1, 0.3));
+            this.getComponent(fc.ComponentMaterial).clrPrimary = new fc.Color(0, 0.3, 0.6, 1);
+            //Turret 
             let characterNodeTurret = new fc.Node("turret");
-            //Mesh & Material character body
-            this.addComponent(new fc.ComponentMesh(characterMesh));
-            this.addComponent(new fc.ComponentMaterial(characterMaterial));
-            //Skalierung Gegner
-            this.getComponent(fc.ComponentMesh).mtxPivot.scaleY(0.3);
-            this.addComponent(new fc.ComponentTransform);
-            //Mesh & Material character turret
-            //Turret an character hängen
             this.addChild(characterNodeTurret);
-            characterNodeTurret.addComponent(new fc.ComponentMesh(characterTurretMesh));
-            characterNodeTurret.addComponent(new fc.ComponentMaterial(characterMaterial));
+            characterNodeTurret.addComponent(new fc.ComponentMesh(L02_spaceInvaders.QuadNode.mesh));
+            characterNodeTurret.addComponent(new fc.ComponentMaterial(L02_spaceInvaders.QuadNode.material));
             characterNodeTurret.getComponent(fc.ComponentMesh).mtxPivot.scaleX(0.2);
             characterNodeTurret.getComponent(fc.ComponentMesh).mtxPivot.scaleY(0.6);
+            characterNodeTurret.getComponent(fc.ComponentMaterial).clrPrimary = new fc.Color(0, 0.3, 0.6, 1);
         }
     }
     L02_spaceInvaders.Character = Character;

@@ -14,13 +14,13 @@ namespace L02_spaceInvaders {
     let speedCharacter: number = 1;
     //Projektile
     let projectileNode: fc.Node = new fc.Node("projectile");
-    let newProjectile: Boolean  = true;
+    let newProjectile: Boolean = true;
     let reloadeTime: number = 2000;
-    
+
     function init(_event: Event): void {
         //Canvas holen und speichern
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
-        
+
         //Camera erstellen und verschieben
         let comCamera: fc.ComponentCamera = new fc.ComponentCamera();
         comCamera.mtxPivot.translateZ(15);
@@ -60,21 +60,21 @@ namespace L02_spaceInvaders {
         /*** Barrieren Block erzeugen ***/
         for (let i: number = 0; i < 5; i++) {
             //verschiebung nach rechts
-            posBarriere += 10;
+            posBarriere += 3;
             //zurücksetzten der reihenverschiebung
             posBarrierRow = 0;
 
             /*** Reihen erzeugen ***/
-            for ( let row: number = 0; row < 5; row++) {
+            for (let row: number = 0; row < 5; row++) {
                 //verschiebung nach rechts
-                posBarrierRow += 1;
+                posBarrierRow += 0.3;
                 //zurücksetzen der Höhe
                 posBarrierColumn = 0;
 
                 /*** Spalten erzeugen ***/
                 for (let k: number = 0; k < 4; k++) {
-                    let barriers: Barrier = new Barrier(posBarrierRow, posBarrierColumn, posBarriere); 
-                    posBarrierColumn += 1;
+                    let barriers: Barrier = new Barrier(posBarrierRow, posBarrierColumn, posBarriere);
+                    posBarrierColumn += 0.3;
                     //block an bariereNode anhängen
                     barrierNode.addChild(barriers);
                 }
@@ -85,18 +85,17 @@ namespace L02_spaceInvaders {
     function createEnemie(): void {
         /*** Mutterschiff ***/
         let posxMothership: number = 0;
-        let posyMothership: number = 11;
+        let posyMothership: number = 8.7;
 
         //Klassenaufruf
-        let mothership: Mothership = new Mothership(posxMothership, posyMothership);
-        enemieNode.addChild(mothership);
+        enemieNode.addChild(new Mothership(posxMothership, posyMothership));
 
         /*** Kleine Gegner ***/
         let posxEnemie: number = 0;
-        let posyEnemie: number = 0; 
+        let posyEnemie: number = 0;
 
         for (let columnIndex: number = 0; columnIndex < 4; columnIndex++) {
-            posyEnemie += 1.5;
+            posyEnemie += 1;
             posxEnemie = 0;
             for (let rowIndex: number = 0; rowIndex < 10; rowIndex++) {
                 //Klassenaufruf
@@ -125,19 +124,44 @@ namespace L02_spaceInvaders {
 
         //Als keydown event außerhalb der update
         if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.SPACE])) {
-                if (newProjectile == true) {
-                let projectile: Projectile  = new Projectile(characterNode.mtxLocal.translation.x, characterNode.mtxLocal.translation.y);
+            if (newProjectile == true) {
+                let projectile: Projectile = new Projectile(characterNode.mtxLocal.translation.x, characterNode.mtxLocal.translation.y);
                 projectileNode.addChild(projectile);
                 newProjectile = false;
                 fc.Time.game.setTimer(reloadeTime, 1, checkProjectile);
             }
         }
 
-        for (let iProjectile of projectileNode.getChildren() as Projectile[]) {
-            iProjectile.shot();
+        for (let projectile of projectileNode.getChildren() as Projectile[]) {
+            projectile.move();
+            if (projectile.mtxLocal.translation.y > 9) {
+                projectileNode.removeChild(projectile);
+            }
         }
 
-
+        collisionDetection();
         viewport.draw();
+    }
+
+    function collisionDetection(): void {
+        for (let projectile of projectileNode.getChildren() as Projectile[]) {
+            for (let enemie of enemieNode.getChildren() as Invader[]) {
+                if (projectile.checkCollision(enemie)) {
+                    console.log("collision detected");
+                    projectileNode.removeChild(projectile);
+                    enemieNode.removeChild(enemie);
+                }
+            }
+        }
+
+        for (let projectile of projectileNode.getChildren() as Projectile[]) {
+            for (let barriere of barrierNode.getChildren() as Barrier[]) {
+                if (projectile.checkCollision(barriere)) {
+                    console.log("collision detected");
+                    projectileNode.removeChild(projectile);
+                    barrierNode.removeChild(barriere);
+                }
+            }
+        }
     }
 }

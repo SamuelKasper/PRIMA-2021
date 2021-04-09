@@ -51,19 +51,19 @@ var L02_spaceInvaders;
         /*** Barrieren Block erzeugen ***/
         for (let i = 0; i < 5; i++) {
             //verschiebung nach rechts
-            posBarriere += 10;
+            posBarriere += 3;
             //zurücksetzten der reihenverschiebung
             posBarrierRow = 0;
             /*** Reihen erzeugen ***/
             for (let row = 0; row < 5; row++) {
                 //verschiebung nach rechts
-                posBarrierRow += 1;
+                posBarrierRow += 0.3;
                 //zurücksetzen der Höhe
                 posBarrierColumn = 0;
                 /*** Spalten erzeugen ***/
                 for (let k = 0; k < 4; k++) {
                     let barriers = new L02_spaceInvaders.Barrier(posBarrierRow, posBarrierColumn, posBarriere);
-                    posBarrierColumn += 1;
+                    posBarrierColumn += 0.3;
                     //block an bariereNode anhängen
                     barrierNode.addChild(barriers);
                 }
@@ -73,15 +73,14 @@ var L02_spaceInvaders;
     function createEnemie() {
         /*** Mutterschiff ***/
         let posxMothership = 0;
-        let posyMothership = 11;
+        let posyMothership = 8.7;
         //Klassenaufruf
-        let mothership = new L02_spaceInvaders.Mothership(posxMothership, posyMothership);
-        enemieNode.addChild(mothership);
+        enemieNode.addChild(new L02_spaceInvaders.Mothership(posxMothership, posyMothership));
         /*** Kleine Gegner ***/
         let posxEnemie = 0;
         let posyEnemie = 0;
         for (let columnIndex = 0; columnIndex < 4; columnIndex++) {
-            posyEnemie += 1.5;
+            posyEnemie += 1;
             posxEnemie = 0;
             for (let rowIndex = 0; rowIndex < 10; rowIndex++) {
                 //Klassenaufruf
@@ -113,10 +112,34 @@ var L02_spaceInvaders;
                 fc.Time.game.setTimer(reloadeTime, 1, checkProjectile);
             }
         }
-        for (let iProjectile of projectileNode.getChildren()) {
-            iProjectile.shot();
+        for (let projectile of projectileNode.getChildren()) {
+            projectile.move();
+            if (projectile.mtxLocal.translation.y > 9) {
+                projectileNode.removeChild(projectile);
+            }
         }
+        collisionDetection();
         viewport.draw();
+    }
+    function collisionDetection() {
+        for (let projectile of projectileNode.getChildren()) {
+            for (let enemie of enemieNode.getChildren()) {
+                if (projectile.checkCollision(enemie)) {
+                    console.log("collision detected");
+                    projectileNode.removeChild(projectile);
+                    enemieNode.removeChild(enemie);
+                }
+            }
+        }
+        for (let projectile of projectileNode.getChildren()) {
+            for (let barriere of barrierNode.getChildren()) {
+                if (projectile.checkCollision(barriere)) {
+                    console.log("collision detected");
+                    projectileNode.removeChild(projectile);
+                    barrierNode.removeChild(barriere);
+                }
+            }
+        }
     }
 })(L02_spaceInvaders || (L02_spaceInvaders = {}));
 //# sourceMappingURL=spaceInvaders.js.map

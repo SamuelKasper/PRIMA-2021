@@ -1,30 +1,19 @@
 namespace L02_spaceInvaders {
     import fc = FudgeCore;
-    export class Character extends fc.Node {
+    export class Character extends QuadNode {
         constructor() {
-            let characterTurretMesh: fc.MeshQuad = new fc.MeshQuad("characterTurretMesh");
-            let characterMesh: fc.MeshQuad = new fc.MeshQuad("characterMesh");
-            let characterMaterial: fc.Material = new fc.Material("Material", fc.ShaderUniColor, new fc.CoatColored(new fc.Color(0, 1, 0, 1)));
+            super("character", new fc.Vector2(0, 0), new fc.Vector2(1, 0.3));
+            this.getComponent(fc.ComponentMaterial).clrPrimary = new fc.Color(0, 0.3, 0.6, 1);
 
-            super("character"); 
-            //Lokale Variablen
+            //Turret 
             let characterNodeTurret: fc.Node = new fc.Node("turret");
-            
-            //Mesh & Material character body
-            this.addComponent(new fc.ComponentMesh(characterMesh));
-            this.addComponent(new fc.ComponentMaterial(characterMaterial));
-            //Skalierung Gegner
-            this.getComponent(fc.ComponentMesh).mtxPivot.scaleY(0.3);
-            this.addComponent(new fc.ComponentTransform);
-
-
-            //Mesh & Material character turret
-            //Turret an character hängen
             this.addChild(characterNodeTurret);
-            characterNodeTurret.addComponent(new fc.ComponentMesh(characterTurretMesh));
-            characterNodeTurret.addComponent(new fc.ComponentMaterial(characterMaterial));
+            
+            characterNodeTurret.addComponent(new fc.ComponentMesh(QuadNode.mesh));
+            characterNodeTurret.addComponent(new fc.ComponentMaterial(QuadNode.material));
             characterNodeTurret.getComponent(fc.ComponentMesh).mtxPivot.scaleX(0.2);
             characterNodeTurret.getComponent(fc.ComponentMesh).mtxPivot.scaleY(0.6);
+            characterNodeTurret.getComponent(fc.ComponentMaterial).clrPrimary = new fc.Color(0, 0.3, 0.6, 1);
         }
     }
 
