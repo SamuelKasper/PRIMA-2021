@@ -17,7 +17,7 @@ namespace L02_spaceInvaders {
     let projectileNode: fc.Node = new fc.Node("projectile");
     let newProjectile: Boolean = true;
     let newInvaderProjectile: Boolean = true;
-    let reloadeTime: number = 10;
+    let reloadeTime: number = 2000;
     //Invader Bewegen
     let allowMove: Boolean = true;
     let direction: String = "";

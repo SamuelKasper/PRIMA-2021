@@ -18,7 +18,7 @@ var L02_spaceInvaders;
     let projectileNode = new fc.Node("projectile");
     let newProjectile = true;
     let newInvaderProjectile = true;
-    let reloadeTime = 10;
+    let reloadeTime = 2000;
     //Invader Bewegen
     let allowMove = true;
     let direction = "";
