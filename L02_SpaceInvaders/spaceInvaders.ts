@@ -105,6 +105,7 @@ namespace L02_spaceInvaders {
         let posyEnemie: number = 0;
 
         for (let columnIndex: number = 0; columnIndex < 10; columnIndex++) {
+            //Übergeordnete Spalten an denen die Invaders hängen
             enemieColumnNode = new fc.Node(`enemieColumnNode: ${columnIndex}`);
             enemieNode.addChild(enemieColumnNode);
             posxEnemie += 1.5;
@@ -129,12 +130,19 @@ namespace L02_spaceInvaders {
     }
 
     function collisionDetection(): void {
+        //Mutterschiff Collision
+        for (let projectile of projectileNode.getChildren() as Projectile[]) {
+            let mothership: Mothership = enemieNode.getChild(0) as Mothership;
+            if (projectile.checkCollision(mothership)) {
+                fc.Loop.removeEventListener(fc.EVENT.LOOP_FRAME, update);
+        }
+    }
+
         //Enemie Collision
         for (let projectile of projectileNode.getChildren() as Projectile[]) {
             for (let enemieColumnNodes of enemieNode.getChildren()) {
                 for (let enemie of enemieColumnNodes.getChildren() as Invader[]) {
                     if (projectile.checkCollision(enemie)) {
-                        console.log("collision detected");
                         projectileNode.removeChild(projectile);
                         enemieColumnNodes.removeChild(enemie);
                         //SpaltenNode löschen wenn keine Enemies mehr vorhanden
@@ -151,7 +159,6 @@ namespace L02_spaceInvaders {
         for (let projectile of projectileNode.getChildren() as Projectile[]) {
             for (let barriere of barrierNode.getChildren() as Barrier[]) {
                 if (projectile.checkCollision(barriere)) {
-                    console.log("collision detected");
                     projectileNode.removeChild(projectile);
                     barrierNode.removeChild(barriere);
                 }
@@ -233,10 +240,10 @@ namespace L02_spaceInvaders {
 
     //Mutterschiff Movement
     function mothershipMovementCheck(): void {
-        if (enemieNode.getChild(0).mtxLocal.translation.x > 7.5)
+        if (enemieNode.getChild(0)?.mtxLocal.translation.x > 7.5)
             mothershipMoveRight = false;
 
-        if (enemieNode.getChild(0).mtxLocal.translation.x < -7.5)
+        if (enemieNode.getChild(0)?.mtxLocal.translation.x < -7.5)
             mothershipMoveRight = true;
     }
 
@@ -259,13 +266,6 @@ namespace L02_spaceInvaders {
                 fc.Time.game.setTimer(reloadeTime, 1, checkProjectile);
             }
         }
-
-        /*Invader Färben
-        for (let enemieColumnNodes of enemieNode.getChildren()) {
-            if (enemieColumnNodes.getChildren().length - 1 >= 0) {
-                enemieColumnNodes.getChild(enemieColumnNodes.getChildren().length - 1).getComponent(fc.ComponentMaterial).clrPrimary = new fc.Color(1, 0, 1, 1);
-            }
-        }*/
 
         //Shoot Invader
         let shootingInvader: number = Math.round(Math.random() * ((enemieNode.getChildren().length - 1)) - 0.5) + 1;
@@ -301,9 +301,6 @@ namespace L02_spaceInvaders {
 
         //Invaders Bewegen
         moveInvaders();
-
-
-
 
         viewport.draw();
     }
