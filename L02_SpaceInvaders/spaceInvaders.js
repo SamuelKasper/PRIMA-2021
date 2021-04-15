@@ -18,12 +18,13 @@ var L02_spaceInvaders;
     let projectileNode = new fc.Node("projectile");
     let newProjectile = true;
     let newInvaderProjectile = true;
-    let reloadeTime = 20;
+    let reloadeTime = 1000;
     //Invader Bewegen
     let allowMove = true;
     let direction = "";
     let down = true;
     let stopMovingDown = false;
+    let mothershipMoveRight = true;
     function init(_event) {
         //Canvas holen und speichern
         const canvas = document.querySelector("canvas");
@@ -203,6 +204,13 @@ var L02_spaceInvaders;
             fc.Time.game.setTimer(2500, 1, invaderEnableMove);
         }
     }
+    //Mutterschiff Movement
+    function mothershipMovementCheck() {
+        if (enemieNode.getChild(0).mtxLocal.translation.x > 7.5)
+            mothershipMoveRight = false;
+        if (enemieNode.getChild(0).mtxLocal.translation.x < -7.5)
+            mothershipMoveRight = true;
+    }
     function update(_event) {
         let offset = speedCharacter * fc.Loop.timeFrameReal / 1000;
         if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.A, fc.KEYBOARD_CODE.ARROW_LEFT])) {
@@ -235,17 +243,22 @@ var L02_spaceInvaders;
                     projectile.mtxLocal.rotateZ(180);
                     projectileNode.addChild(projectile);
                     newInvaderProjectile = false;
-                    fc.Time.game.setTimer(1200, 1, checkProjectileInvader);
+                    fc.Time.game.setTimer(700, 1, checkProjectileInvader);
                 }
             }
         }
-        //Move
+        //Move Projectile
         for (let projectile of projectileNode.getChildren()) {
             projectile.move();
             if (projectile.mtxLocal.translation.y > 9 || projectile.mtxLocal.translation.y < 0) {
                 projectileNode.removeChild(projectile);
             }
         }
+        mothershipMovementCheck();
+        if (mothershipMoveRight)
+            enemieNode.getChild(0).mtxLocal.translateX(0.2);
+        else
+            enemieNode.getChild(0).mtxLocal.translateX(-0.2);
         //Kollision Projektile / Invaders / Barriere
         collisionDetection();
         //Invaders Bewegen

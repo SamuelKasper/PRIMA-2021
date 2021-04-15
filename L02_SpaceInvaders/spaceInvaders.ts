@@ -17,12 +17,13 @@ namespace L02_spaceInvaders {
     let projectileNode: fc.Node = new fc.Node("projectile");
     let newProjectile: Boolean = true;
     let newInvaderProjectile: Boolean = true;
-    let reloadeTime: number = 20;
+    let reloadeTime: number = 1000;
     //Invader Bewegen
     let allowMove: Boolean = true;
     let direction: String = "";
     let down: Boolean = true;
     let stopMovingDown: Boolean = false;
+    let mothershipMoveRight: boolean = true;
 
     function init(_event: Event): void {
         //Canvas holen und speichern
@@ -170,7 +171,6 @@ namespace L02_spaceInvaders {
             }
         }
 
-
         //Bewegen
         if (allowMove == true) {
             //Richtung
@@ -231,6 +231,15 @@ namespace L02_spaceInvaders {
         }
     }
 
+    //Mutterschiff Movement
+    function mothershipMovementCheck(): void {
+        if (enemieNode.getChild(0).mtxLocal.translation.x > 7.5)
+            mothershipMoveRight = false;
+
+        if (enemieNode.getChild(0).mtxLocal.translation.x < -7.5)
+            mothershipMoveRight = true;
+    }
+
     function update(_event: Event): void {
         let offset: number = speedCharacter * fc.Loop.timeFrameReal / 1000;
         if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.A, fc.KEYBOARD_CODE.ARROW_LEFT])) {
@@ -267,18 +276,25 @@ namespace L02_spaceInvaders {
                     projectile.mtxLocal.rotateZ(180);
                     projectileNode.addChild(projectile);
                     newInvaderProjectile = false;
-                    fc.Time.game.setTimer(1200, 1, checkProjectileInvader);
+                    fc.Time.game.setTimer(700, 1, checkProjectileInvader);
                 }
             }
         }
 
-        //Move
+        //Move Projectile
         for (let projectile of projectileNode.getChildren() as Projectile[]) {
             projectile.move();
             if (projectile.mtxLocal.translation.y > 9 || projectile.mtxLocal.translation.y < 0) {
                 projectileNode.removeChild(projectile);
             }
         }
+
+        mothershipMovementCheck();
+        if (mothershipMoveRight)
+            enemieNode.getChild(0).mtxLocal.translateX(0.2);
+        else
+            enemieNode.getChild(0).mtxLocal.translateX(-0.2);
+
 
         //Kollision Projektile / Invaders / Barriere
         collisionDetection();
