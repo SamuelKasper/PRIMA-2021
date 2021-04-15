@@ -24,6 +24,7 @@ namespace L02_spaceInvaders {
     let down: Boolean = true;
     let stopMovingDown: Boolean = false;
     let mothershipMoveRight: boolean = true;
+    let state: GameState;
 
     function init(_event: Event): void {
         //Canvas holen und speichern
@@ -52,6 +53,8 @@ namespace L02_spaceInvaders {
 
         fc.Loop.start(fc.LOOP_MODE.TIME_REAL, 30);
         fc.Loop.addEventListener(fc.EVENT.LOOP_FRAME, update);
+        state = GameState.running;
+
     }
 
     function createCharacter(): void {
@@ -133,9 +136,8 @@ namespace L02_spaceInvaders {
         //Mutterschiff Collision
         for (let projectile of projectileNode.getChildren() as Projectile[]) {
             let mothership: Mothership = enemieNode.getChild(0) as Mothership;
-            console.log("test");
             if (projectile.checkCollision(mothership)) {
-                fc.Loop.removeEventListener(fc.EVENT.LOOP_FRAME, update);
+                state = GameState.over;
             }
         }
 
@@ -249,65 +251,67 @@ namespace L02_spaceInvaders {
     }
 
     function update(_event: Event): void {
-        let offset: number = speedCharacter * fc.Loop.timeFrameReal / 1000;
-        if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.A, fc.KEYBOARD_CODE.ARROW_LEFT])) {
-            characterNode.mtxLocal.translateX(-offset);
-        }
-
-        if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.D, fc.KEYBOARD_CODE.ARROW_RIGHT])) {
-            characterNode.mtxLocal.translateX(+offset);
-        }
-
-        //Shoot Player
-        if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.SPACE])) {
-            if (newProjectile == true) {
-                let projectile: Projectile = new Projectile(characterNode.mtxLocal.translation.x, characterNode.mtxLocal.translation.y);
-                projectileNode.addChild(projectile);
-                newProjectile = false;
-                fc.Time.game.setTimer(reloadeTime, 1, checkProjectile);
+        if (state == GameState.running) {
+            let offset: number = speedCharacter * fc.Loop.timeFrameReal / 1000;
+            if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.A, fc.KEYBOARD_CODE.ARROW_LEFT])) {
+                characterNode.mtxLocal.translateX(-offset);
             }
-        }
 
-        //Shoot Invader
-        let shootingInvader: number = Math.round(Math.random() * ((enemieNode.getChildren().length - 1)) - 0.5) + 1;
-        if (enemieNode.getChildren().length - 1 > 0) {
-            if (enemieNode.getChild(shootingInvader).getChildren().length - 1 >= 0) {
-                if (newInvaderProjectile == true) {
-                    let projectile: Projectile = new Projectile(enemieNode.getChild(shootingInvader).getChild(enemieNode.getChild(shootingInvader).getChildren().length - 1).mtxLocal.translation.x, enemieNode.getChild(shootingInvader).getChild(enemieNode.getChild(shootingInvader).getChildren().length - 1).mtxLocal.translation.y - 0.8);
-                    projectile.mtxLocal.rotateZ(180);
+            if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.D, fc.KEYBOARD_CODE.ARROW_RIGHT])) {
+                characterNode.mtxLocal.translateX(+offset);
+            }
+
+            //Shoot Player
+            if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.SPACE])) {
+                if (newProjectile == true) {
+                    let projectile: Projectile = new Projectile(characterNode.mtxLocal.translation.x, characterNode.mtxLocal.translation.y);
                     projectileNode.addChild(projectile);
-                    newInvaderProjectile = false;
-                    fc.Time.game.setTimer(700, 1, checkProjectileInvader);
+                    newProjectile = false;
+                    fc.Time.game.setTimer(reloadeTime, 1, checkProjectile);
                 }
             }
-        }
 
-        //Move Projectile
-        for (let projectile of projectileNode.getChildren() as Projectile[]) {
-            projectile.move();
-            if (projectile.mtxLocal.translation.y > 9 || projectile.mtxLocal.translation.y < 0) {
-                projectileNode.removeChild(projectile);
+            //Shoot Invader
+            let shootingInvader: number = Math.round(Math.random() * ((enemieNode.getChildren().length - 1)) - 0.5) + 1;
+            if (enemieNode.getChildren().length - 1 > 0) {
+                if (enemieNode.getChild(shootingInvader).getChildren().length - 1 >= 0) {
+                    if (newInvaderProjectile == true) {
+                        let projectile: Projectile = new Projectile(enemieNode.getChild(shootingInvader).getChild(enemieNode.getChild(shootingInvader).getChildren().length - 1).mtxLocal.translation.x, enemieNode.getChild(shootingInvader).getChild(enemieNode.getChild(shootingInvader).getChildren().length - 1).mtxLocal.translation.y - 0.8);
+                        projectile.mtxLocal.rotateZ(180);
+                        projectileNode.addChild(projectile);
+                        newInvaderProjectile = false;
+                        fc.Time.game.setTimer(700, 1, checkProjectileInvader);
+                    }
+                }
             }
+
+            //Move Projectile
+            for (let projectile of projectileNode.getChildren() as Projectile[]) {
+                projectile.move();
+                if (projectile.mtxLocal.translation.y > 9 || projectile.mtxLocal.translation.y < 0) {
+                    projectileNode.removeChild(projectile);
+                }
+            }
+
+            mothershipMovementCheck();
+            if (mothershipMoveRight) {
+                let mothership: Mothership = enemieNode.getChild(0) as Mothership;
+                mothership.mtxLocal.translateX(0.2);
+                mothership.setRectPosition();
+            } else {
+                let mothership: Mothership = enemieNode.getChild(0) as Mothership;
+                mothership.mtxLocal.translateX(-0.2);
+                mothership.setRectPosition();
+            }
+
+            //Kollision Projektile / Invaders / Barriere
+            collisionDetection();
+
+            //Invaders Bewegen
+            moveInvaders();
+
+            viewport.draw();
         }
-
-        mothershipMovementCheck();
-        if (mothershipMoveRight) {
-            let mothership: Mothership = enemieNode.getChild(0) as Mothership;
-            mothership.mtxLocal.translateX(0.2);
-            mothership.setRectPosition();
-        } else {
-            let mothership: Mothership = enemieNode.getChild(0) as Mothership;
-            mothership.mtxLocal.translateX(-0.2);
-            mothership.setRectPosition();
-        }
-
-        //Kollision Projektile / Invaders / Barriere
-        collisionDetection();
-
-        //Invaders Bewegen
-        moveInvaders();
-
-        viewport.draw();
     }
 
 }
