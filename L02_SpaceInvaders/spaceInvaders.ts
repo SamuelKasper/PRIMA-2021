@@ -17,7 +17,7 @@ namespace L02_spaceInvaders {
     let projectileNode: fc.Node = new fc.Node("projectile");
     let newProjectile: Boolean = true;
     let newInvaderProjectile: Boolean = true;
-    let reloadeTime: number = 1000;
+    let reloadeTime: number = 10;
     //Invader Bewegen
     let allowMove: Boolean = true;
     let direction: String = "";
@@ -133,10 +133,11 @@ namespace L02_spaceInvaders {
         //Mutterschiff Collision
         for (let projectile of projectileNode.getChildren() as Projectile[]) {
             let mothership: Mothership = enemieNode.getChild(0) as Mothership;
+            console.log("test");
             if (projectile.checkCollision(mothership)) {
                 fc.Loop.removeEventListener(fc.EVENT.LOOP_FRAME, update);
+            }
         }
-    }
 
         //Enemie Collision
         for (let projectile of projectileNode.getChildren() as Projectile[]) {
@@ -290,11 +291,15 @@ namespace L02_spaceInvaders {
         }
 
         mothershipMovementCheck();
-        if (mothershipMoveRight)
-            enemieNode.getChild(0).mtxLocal.translateX(0.2);
-        else
-            enemieNode.getChild(0).mtxLocal.translateX(-0.2);
-
+        if (mothershipMoveRight) {
+            let mothership: Mothership = enemieNode.getChild(0) as Mothership;
+            mothership.mtxLocal.translateX(0.2);
+            mothership.setRectPosition();
+        } else {
+            let mothership: Mothership = enemieNode.getChild(0) as Mothership;
+            mothership.mtxLocal.translateX(-0.2);
+            mothership.setRectPosition();
+        }
 
         //Kollision Projektile / Invaders / Barriere
         collisionDetection();

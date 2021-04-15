@@ -18,7 +18,7 @@ var L02_spaceInvaders;
     let projectileNode = new fc.Node("projectile");
     let newProjectile = true;
     let newInvaderProjectile = true;
-    let reloadeTime = 1000;
+    let reloadeTime = 10;
     //Invader Bewegen
     let allowMove = true;
     let direction = "";
@@ -114,6 +114,7 @@ var L02_spaceInvaders;
         //Mutterschiff Collision
         for (let projectile of projectileNode.getChildren()) {
             let mothership = enemieNode.getChild(0);
+            console.log("test");
             if (projectile.checkCollision(mothership)) {
                 fc.Loop.removeEventListener("loopFrame" /* LOOP_FRAME */, update);
             }
@@ -255,10 +256,16 @@ var L02_spaceInvaders;
             }
         }
         mothershipMovementCheck();
-        if (mothershipMoveRight)
-            enemieNode.getChild(0).mtxLocal.translateX(0.2);
-        else
-            enemieNode.getChild(0).mtxLocal.translateX(-0.2);
+        if (mothershipMoveRight) {
+            let mothership = enemieNode.getChild(0);
+            mothership.mtxLocal.translateX(0.2);
+            mothership.setRectPosition();
+        }
+        else {
+            let mothership = enemieNode.getChild(0);
+            mothership.mtxLocal.translateX(-0.2);
+            mothership.setRectPosition();
+        }
         //Kollision Projektile / Invaders / Barriere
         collisionDetection();
         //Invaders Bewegen
