@@ -48,6 +48,7 @@ var L02_spaceInvaders;
         fc.Loop.start(fc.LOOP_MODE.TIME_REAL, 30);
         fc.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         state = L02_spaceInvaders.GameState.running;
+        document.getElementById("state").innerHTML = "Spielstatus: läuft";
     }
     function createCharacter() {
         characterNode = new L02_spaceInvaders.Character();
@@ -118,6 +119,7 @@ var L02_spaceInvaders;
             let mothership = enemieNode.getChild(0);
             if (projectile.checkCollision(mothership)) {
                 state = L02_spaceInvaders.GameState.over;
+                document.getElementById("state").innerHTML = "Spielstatus: gewonnen";
             }
         }
         //Enemie Collision
@@ -142,6 +144,14 @@ var L02_spaceInvaders;
                     projectileNode.removeChild(projectile);
                     barrierNode.removeChild(barriere);
                 }
+            }
+        }
+        //Spielerschiff Collision
+        for (let projectile of projectileNode.getChildren()) {
+            let spielerSchiff = rootNode.getChild(3);
+            if (projectile.checkCollision(spielerSchiff)) {
+                state = L02_spaceInvaders.GameState.over;
+                document.getElementById("state").innerHTML = "Spielstatus: verloren";
             }
         }
     }
@@ -224,9 +234,11 @@ var L02_spaceInvaders;
             let offset = speedCharacter * fc.Loop.timeFrameReal / 1000;
             if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.A, fc.KEYBOARD_CODE.ARROW_LEFT])) {
                 characterNode.mtxLocal.translateX(-offset);
+                characterNode.setRectPosition();
             }
             if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.D, fc.KEYBOARD_CODE.ARROW_RIGHT])) {
                 characterNode.mtxLocal.translateX(+offset);
+                characterNode.setRectPosition();
             }
             //Shoot Player
             if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.SPACE])) {

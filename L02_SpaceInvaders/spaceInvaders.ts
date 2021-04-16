@@ -54,6 +54,7 @@ namespace L02_spaceInvaders {
         fc.Loop.start(fc.LOOP_MODE.TIME_REAL, 30);
         fc.Loop.addEventListener(fc.EVENT.LOOP_FRAME, update);
         state = GameState.running;
+        document.getElementById("state").innerHTML = "Spielstatus: läuft";
 
     }
 
@@ -138,6 +139,7 @@ namespace L02_spaceInvaders {
             let mothership: Mothership = enemieNode.getChild(0) as Mothership;
             if (projectile.checkCollision(mothership)) {
                 state = GameState.over;
+                document.getElementById("state").innerHTML = "Spielstatus: gewonnen";
             }
         }
 
@@ -165,6 +167,15 @@ namespace L02_spaceInvaders {
                     projectileNode.removeChild(projectile);
                     barrierNode.removeChild(barriere);
                 }
+            }
+        }
+    
+        //Spielerschiff Collision
+        for (let projectile of projectileNode.getChildren() as Projectile[]) {
+            let spielerSchiff: Character = rootNode.getChild(3) as Character;
+            if (projectile.checkCollision(spielerSchiff)) {
+                state = GameState.over;
+                document.getElementById("state").innerHTML = "Spielstatus: verloren";
             }
         }
     }
@@ -255,10 +266,12 @@ namespace L02_spaceInvaders {
             let offset: number = speedCharacter * fc.Loop.timeFrameReal / 1000;
             if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.A, fc.KEYBOARD_CODE.ARROW_LEFT])) {
                 characterNode.mtxLocal.translateX(-offset);
+                characterNode.setRectPosition();
             }
 
             if (fc.Keyboard.isPressedOne([fc.KEYBOARD_CODE.D, fc.KEYBOARD_CODE.ARROW_RIGHT])) {
                 characterNode.mtxLocal.translateX(+offset);
+                characterNode.setRectPosition();
             }
 
             //Shoot Player
