@@ -258,7 +258,7 @@ var L02_spaceInvaders;
                         projectile.mtxLocal.rotateZ(180);
                         projectileNode.addChild(projectile);
                         newInvaderProjectile = false;
-                        fc.Time.game.setTimer(700, 1, checkProjectileInvader);
+                        fc.Time.game.setTimer(700, 1, checkProjectileInvader); //700
                     }
                 }
             }
