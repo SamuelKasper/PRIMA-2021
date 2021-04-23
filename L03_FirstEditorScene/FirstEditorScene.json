@@ -1,0 +1,73 @@
+{
+  "MeshCube|2021-04-22T15:36:29.576Z|60272": {
+    "ƒ.MeshCube": {
+      "idResource": "MeshCube|2021-04-22T15:36:29.576Z|60272",
+      "name": "Cube",
+      "type": "MeshCube"
+    }
+  },
+  "Material|2021-04-22T15:37:24.524Z|94076": {
+    "ƒ.Material": {
+      "name": "Material",
+      "idResource": "Material|2021-04-22T15:37:24.524Z|94076",
+      "shader": "ShaderUniColor",
+      "coat": {
+        "ƒ.CoatColored": {
+          "name": "Coat",
+          "color": "[0.5568627450980392, 0.4627450980392157, 0.7764705882352941, 1]"
+        }
+      }
+    }
+  },
+  "Graph|2021-04-22T15:37:50.492Z|11392": {
+    "ƒ.Graph": {
+      "name": "Graph",
+      "components": {},
+      "children": [
+        {
+          "ƒ.Node": {
+            "name": "Cube Node",
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshCube|2021-04-22T15:36:29.576Z|60272",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[0.8156862745098039, 0.20784313725490197, 0.20784313725490197, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2021-04-22T15:37:24.524Z|94076"
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        }
+      ],
+      "idResource": "Graph|2021-04-22T15:37:50.492Z|11392",
+      "type": "Graph"
+    }
+  }
+}
