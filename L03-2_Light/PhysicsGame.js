@@ -4,31 +4,31 @@ var L03_PhysicsGame;
     var f = FudgeCore;
     let root;
     let cmpAvatar;
-    let viewport = new f.Viewport();
+    let viewport;
     window.addEventListener("load", start);
     async function start(_event) {
         await FudgeCore.Project.loadResourcesFromHTML();
         FudgeCore.Debug.log("Project:", FudgeCore.Project.resources);
-        let graph = FudgeCore.Project.resources["Graph|2021-04-27T14:37:44.804Z|93489"];
+        root = FudgeCore.Project.resources["Graph|2021-04-27T14:37:44.804Z|93489"];
         createAvatar();
         createRigidbodies();
         let cmpCamera = new f.ComponentCamera();
-        cmpCamera.mtxPivot.translateY(50);
-        cmpCamera.mtxPivot.translateZ(50);
+        cmpCamera.mtxPivot.translate(f.Vector3.ONE(20));
         cmpCamera.mtxPivot.lookAt(f.Vector3.ZERO());
         let canvas = document.querySelector("canvas");
-        viewport.initialize("Viewport", graph, cmpCamera, canvas);
-        //viewport.draw();
+        viewport = new f.Viewport();
+        viewport.initialize("Viewport", root, cmpCamera, canvas);
         f.Physics.start(root);
         f.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         f.Loop.start();
     }
     function createAvatar() {
-        cmpAvatar = new f.ComponentRigidbody(0.1, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.CAPSULE, f.PHYSICS_GROUP.GROUP_2);
+        cmpAvatar = new f.ComponentRigidbody(0.1, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.CAPSULE, f.PHYSICS_GROUP.DEFAULT);
         cmpAvatar.restitution = 0.5;
         cmpAvatar.rotationInfluenceFactor = f.Vector3.ZERO();
         cmpAvatar.friction = 1;
         let avatar = new f.Node("Avatar");
+        avatar.addComponent(new f.ComponentTransform(f.Matrix4x4.TRANSLATION(f.Vector3.Y(3))));
         avatar.addComponent(cmpAvatar);
         root.appendChild(avatar);
     }

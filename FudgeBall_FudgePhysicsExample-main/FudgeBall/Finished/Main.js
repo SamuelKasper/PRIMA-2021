@@ -96,7 +96,7 @@ var Turorials_FUDGEPhysics_Lesson1;
         hierarchy.appendChild(player);
         playerBody = player.getComponent(f.ComponentRigidbody);
         player.mtxLocal.scale(new f.Vector3(0.5, 1.8, 0.3));
-        player.mtxLocal.translate(new f.Vector3(2.5, 4, 3.5));
+        player.mtxLocal.translate(new f.Vector3(10.5, 4, 3.5));
         playerBody.rotationInfluenceFactor = new f.Vector3(0, 0, 0);
         playerBody.mtxPivot.scale(new f.Vector3(1, 0.85, 1));
         playerBody.friction = 0.01;
