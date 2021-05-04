@@ -5,7 +5,6 @@ namespace L03_PhysicsGame {
     let cmpAvatar: f.ComponentRigidbody;
     let viewport: f.Viewport;
     let avatar: f.Node;
-    let speedAvatar: number = 3;
     let cmpCamera: f.ComponentCamera = new f.ComponentCamera();
 
     window.addEventListener("load", start);
@@ -17,11 +16,14 @@ namespace L03_PhysicsGame {
 
         createAvatar();
         createRigidbodies();
+        createBall();
         cmpCamera.mtxPivot.translateX(0);
         cmpCamera.mtxPivot.translateZ(20);
-        cmpCamera.mtxPivot.translateZ(20);
-        cmpCamera.mtxPivot.translateY(20);
+        cmpCamera.mtxPivot.translateY(10);
         cmpCamera.mtxPivot.lookAt(f.Vector3.ZERO());
+
+        //first person
+        //cmpCamera.mtxPivot.translateY(1);
 
         let canvas: HTMLCanvasElement = document.querySelector("canvas");
         viewport = new f.Viewport();
@@ -38,17 +40,25 @@ namespace L03_PhysicsGame {
         cmpAvatar.friction = 1;
         avatar = new f.Node("Avatar");
 
-        let meshAvatar: f.ComponentMesh = new f.ComponentMesh(new f.MeshQuad("quad"));
-        avatar.addComponent(meshAvatar);
-        let matAvatar: f.Material = new f.Material("white", f.ShaderUniColor, new f.CoatColored(new f.Color(1, 0, 1, 1)));
-        avatar.addComponent(new f.ComponentMaterial(matAvatar));
-        avatar.addComponent(new f.ComponentTransform());
-        avatar.mtxWorld.translateY(20);
+        //let meshAvatar: f.ComponentMesh = new f.ComponentMesh(new f.MeshQuad("quad"));
+        //avatar.addComponent(meshAvatar);
+        //let matAvatar: f.Material = new f.Material("white", f.ShaderUniColor, new f.CoatColored(new f.Color(1, 0, 1, 1)));
+        //avatar.addComponent(new f.ComponentMaterial(matAvatar));
+        avatar.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(3))));
 
         avatar.addComponent(cmpAvatar);
         avatar.addComponent(cmpCamera);
-        console.log(avatar);
         root.appendChild(avatar);
+    }
+
+    function createBall(): void {
+        let ball: f.Node = root.getChildrenByName("ball")[0];
+        let cmpBall: f.ComponentRigidbody = new f.ComponentRigidbody(0.5, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.SPHERE, f.PHYSICS_GROUP.DEFAULT);
+        cmpBall.restitution = 0.5;
+        cmpBall.rotationInfluenceFactor = f.Vector3.ZERO();
+        cmpBall.friction = 1;
+        ball.addComponent(cmpBall);
+    
     }
 
     function update(): void {
@@ -67,18 +77,24 @@ namespace L03_PhysicsGame {
     }
 
     function moveAvatar(): void {
-        let offset: number = speedAvatar * f.Loop.timeFrameReal / 1000;
-        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.W])) {
-            avatar.mtxLocal.translateY(-offset);
-        }
-        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.A])) {
-            avatar.mtxLocal.translateX(offset);
-        }
-        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.S])) {
-            avatar.mtxLocal.translateY(offset);
-        }
-        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.D])) {
-            avatar.mtxLocal.translateX(-offset);
-        }
+        let speed: number = 15;
+        let rotate: number = 5;
+        let forward: ƒ.Vector3;
+        forward = avatar.mtxWorld.getZ();
+
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
+            cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, - speed));
+        } else
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
+                cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, speed));
+            } else
+                if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
+                    cmpAvatar.rotateBody(ƒ.Vector3.Y(rotate));
+                } else
+                    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
+                        cmpAvatar.rotateBody(ƒ.Vector3.Y(-rotate));
+                    } else {
+                        //cmpAvatar.setVelocity(f.Vector3.SCALE(forward, 0));
+                    }
     }
 }

@@ -182,8 +182,7 @@
                           "idMaterial": "Material|2021-04-27T14:36:12.329Z|35544"
                         }
                       }
-                    ],
-                    "ComponentTransform": []
+                    ]
                   },
                   "children": [],
                   "idSource": "Graph|2021-04-27T15:08:55.411Z|84202"
@@ -225,8 +224,7 @@
                           "idMaterial": "Material|2021-04-27T14:36:12.329Z|35544"
                         }
                       }
-                    ],
-                    "ComponentTransform": []
+                    ]
                   },
                   "children": [],
                   "idSource": "Graph|2021-04-27T15:08:55.411Z|84202"
@@ -313,110 +311,53 @@
                   },
                   "children": []
                 }
-              },
-              {
-                "ƒ.Node": {
-                  "name": "ball",
-                  "components": {
-                    "ComponentMesh": [
-                      {
-                        "ƒ.ComponentMesh": {
-                          "idMesh": "MeshSphere|2021-04-27T15:13:38.188Z|90827",
-                          "pivot": {
-                            "translation": "[5, 4.100000381469727, 4.199999809265137]",
-                            "rotation": "[0, 0, 0]",
-                            "scaling": "[1, 1, 1]"
-                          },
-                          "Component": {
-                            "active": true
-                          }
-                        }
-                      }
-                    ],
-                    "ComponentMaterial": [
-                      {
-                        "ƒ.ComponentMaterial": {
-                          "sortForAlpha": false,
-                          "clrPrimary": "[1, 1, 1, 1]",
-                          "clrSecondary": "[1, 1, 1, 1]",
-                          "pivot": {
-                            "translation": "[0, 0]",
-                            "rotation": 0,
-                            "scaling": "[1, 1]"
-                          },
-                          "Component": {
-                            "active": true
-                          },
-                          "idMaterial": "Material|2021-04-27T15:17:46.626Z|01352"
-                        }
-                      }
-                    ]
-                  },
-                  "children": []
-                }
               }
             ]
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "ball",
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshSphere|2021-04-27T15:13:38.188Z|90827",
+                    "pivot": {
+                      "translation": "[5, 4.100000381469727, 4.199999809265137]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2021-04-27T15:17:46.626Z|01352"
+                  }
+                }
+              ]
+            },
+            "children": []
           }
         }
       ],
       "idResource": "Graph|2021-04-27T14:37:44.804Z|93489",
-      "type": "Graph"
-    }
-  },
-  "Graph|2021-04-27T15:08:55.411Z|84202": {
-    "ƒ.Graph": {
-      "name": "rampe",
-      "components": {
-        "ComponentMesh": [
-          {
-            "ƒ.ComponentMesh": {
-              "idMesh": "MeshCube|2021-04-27T14:35:41.092Z|91586",
-              "pivot": {
-                "translation": "[0, 0, 0]",
-                "rotation": "[0, 0, 0]",
-                "scaling": "[1, 0.30000001192092896, 5]"
-              },
-              "Component": {
-                "active": true
-              }
-            }
-          }
-        ],
-        "ComponentMaterial": [
-          {
-            "ƒ.ComponentMaterial": {
-              "sortForAlpha": false,
-              "clrPrimary": "[1, 1, 1, 1]",
-              "clrSecondary": "[1, 1, 1, 1]",
-              "pivot": {
-                "translation": "[0, 0]",
-                "rotation": 0,
-                "scaling": "[1, 1]"
-              },
-              "Component": {
-                "active": true
-              },
-              "idMaterial": "Material|2021-04-27T14:36:12.329Z|35544"
-            }
-          }
-        ],
-        "ComponentTransform": [
-          {
-            "ƒ.ComponentTransform": {
-              "local": {
-                "translation": "[0, 1, 0]",
-                "rotation": "[0, 0, 0]",
-                "scaling": "[1, 1, 1]"
-              },
-              "Component": {
-                "active": true
-              }
-            }
-          }
-        ]
-      },
-      "children": [],
-      "idResource": "Graph|2021-04-27T15:08:55.411Z|84202",
       "type": "Graph"
     }
   }
