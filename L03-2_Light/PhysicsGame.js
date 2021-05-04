@@ -7,6 +7,7 @@ var L03_PhysicsGame;
     let viewport;
     let avatar;
     let speedAvatar = 3;
+    let cmpCamera = new f.ComponentCamera();
     window.addEventListener("load", start);
     async function start(_event) {
         //Graph|2021-04-27T14:37:44.804Z|93489
@@ -15,7 +16,6 @@ var L03_PhysicsGame;
         root = FudgeCore.Project.resources["Graph|2021-04-27T14:37:44.804Z|93489"];
         createAvatar();
         createRigidbodies();
-        let cmpCamera = new f.ComponentCamera();
         cmpCamera.mtxPivot.translateX(0);
         cmpCamera.mtxPivot.translateZ(20);
         cmpCamera.mtxPivot.translateZ(20);
@@ -24,8 +24,7 @@ var L03_PhysicsGame;
         let canvas = document.querySelector("canvas");
         viewport = new f.Viewport();
         viewport.initialize("Viewport", root, cmpCamera, canvas);
-        f.Physics.start(root);
-        f.Physics.adjustTransform(root, true);
+        f.Physics.adjustTransforms(root, true);
         f.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         f.Loop.start();
     }
@@ -42,6 +41,7 @@ var L03_PhysicsGame;
         avatar.addComponent(new f.ComponentTransform());
         avatar.mtxWorld.translateY(20);
         avatar.addComponent(cmpAvatar);
+        avatar.addComponent(cmpCamera);
         console.log(avatar);
         root.appendChild(avatar);
     }
@@ -61,16 +61,16 @@ var L03_PhysicsGame;
     function moveAvatar() {
         let offset = speedAvatar * f.Loop.timeFrameReal / 1000;
         if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.W])) {
-            avatar.mtxLocal.translateY(offset);
-        }
-        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.A])) {
-            avatar.mtxLocal.translateX(-offset);
-        }
-        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.S])) {
             avatar.mtxLocal.translateY(-offset);
         }
-        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.D])) {
+        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.A])) {
             avatar.mtxLocal.translateX(offset);
+        }
+        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.S])) {
+            avatar.mtxLocal.translateY(offset);
+        }
+        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.D])) {
+            avatar.mtxLocal.translateX(-offset);
         }
     }
 })(L03_PhysicsGame || (L03_PhysicsGame = {}));

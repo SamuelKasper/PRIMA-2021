@@ -6,6 +6,7 @@ namespace L03_PhysicsGame {
     let viewport: f.Viewport;
     let avatar: f.Node;
     let speedAvatar: number = 3;
+    let cmpCamera: f.ComponentCamera = new f.ComponentCamera();
 
     window.addEventListener("load", start);
     async function start(_event: Event): Promise<void> {
@@ -16,7 +17,6 @@ namespace L03_PhysicsGame {
 
         createAvatar();
         createRigidbodies();
-        let cmpCamera: f.ComponentCamera = new f.ComponentCamera();
         cmpCamera.mtxPivot.translateX(0);
         cmpCamera.mtxPivot.translateZ(20);
         cmpCamera.mtxPivot.translateZ(20);
@@ -26,8 +26,7 @@ namespace L03_PhysicsGame {
         let canvas: HTMLCanvasElement = document.querySelector("canvas");
         viewport = new f.Viewport();
         viewport.initialize("Viewport", root, cmpCamera, canvas);
-        f.Physics.start(root);
-        f.Physics.adjustTransform(root, true);
+        f.Physics.adjustTransforms(root, true);
         f.Loop.addEventListener(f.EVENT.LOOP_FRAME, update);
         f.Loop.start();
     }
@@ -47,6 +46,7 @@ namespace L03_PhysicsGame {
         avatar.mtxWorld.translateY(20);
 
         avatar.addComponent(cmpAvatar);
+        avatar.addComponent(cmpCamera);
         console.log(avatar);
         root.appendChild(avatar);
     }
@@ -69,16 +69,16 @@ namespace L03_PhysicsGame {
     function moveAvatar(): void {
         let offset: number = speedAvatar * f.Loop.timeFrameReal / 1000;
         if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.W])) {
-            avatar.mtxLocal.translateY(offset);
-        }
-        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.A])) {
-            avatar.mtxLocal.translateX(-offset);
-        }
-        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.S])) {
             avatar.mtxLocal.translateY(-offset);
         }
-        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.D])) {
+        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.A])) {
             avatar.mtxLocal.translateX(offset);
+        }
+        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.S])) {
+            avatar.mtxLocal.translateY(offset);
+        }
+        if (f.Keyboard.isPressedOne([f.KEYBOARD_CODE.D])) {
+            avatar.mtxLocal.translateX(-offset);
         }
     }
 }
