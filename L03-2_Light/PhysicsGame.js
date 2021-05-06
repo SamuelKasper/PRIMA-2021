@@ -8,15 +8,28 @@ var L03_PhysicsGame;
     let avatar;
     let cmpCamera = new f.ComponentCamera();
     let forward;
+    let cube;
+    let cmpCube;
+    let ball;
+    let cmpBall;
     window.addEventListener("load", start);
     async function start(_event) {
         //Graph|2021-04-27T14:37:44.804Z|93489
         await FudgeCore.Project.loadResourcesFromHTML();
         FudgeCore.Debug.log("Project:", FudgeCore.Project.resources);
         root = FudgeCore.Project.resources["Graph|2021-04-27T14:37:44.804Z|93489"];
+        //cube 
+        cube = new f.Node("Cube");
+        cmpCube = new f.ComponentRigidbody(0.1, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
+        cube.addComponent(cmpCube);
+        //ball
+        ball = root.getChildrenByName("ball")[0];
+        cmpBall = new f.ComponentRigidbody(0.2, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.SPHERE, f.PHYSICS_GROUP.DEFAULT);
+        ball.addComponent(cmpBall);
         createAvatar();
         createRigidbodies();
         createBall();
+        createCube();
         cmpCamera.mtxPivot.translateX(0);
         cmpCamera.mtxPivot.translateZ(20);
         cmpCamera.mtxPivot.translateY(10);
@@ -47,12 +60,20 @@ var L03_PhysicsGame;
         root.appendChild(avatar);
     }
     function createBall() {
-        let ball = root.getChildrenByName("ball")[0];
-        let cmpBall = new f.ComponentRigidbody(0.5, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.SPHERE, f.PHYSICS_GROUP.DEFAULT);
         cmpBall.restitution = 0.5;
         cmpBall.rotationInfluenceFactor = f.Vector3.ZERO();
         cmpBall.friction = 1;
-        ball.addComponent(cmpBall);
+    }
+    function createCube() {
+        cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(3))));
+        cmpCube.restitution = 0.5;
+        cmpCube.rotationInfluenceFactor = f.Vector3.ZERO();
+        cmpCube.friction = 1;
+        let meshCube = new f.ComponentMesh(new f.MeshCube("cube"));
+        cube.addComponent(meshCube);
+        let matCube = new f.Material("white", f.ShaderUniColor, new f.CoatColored(new f.Color(1, 0, 1, 1)));
+        cube.addComponent(new f.ComponentMaterial(matCube));
+        root.appendChild(cube);
     }
     function update() {
         f.Physics.world.simulate(f.Loop.timeFrameReal / 1000);
