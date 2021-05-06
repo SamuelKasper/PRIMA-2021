@@ -12,6 +12,8 @@ var L03_PhysicsGame;
     let cmpCube;
     let ball;
     let cmpBall;
+    let counter = 0;
+    let grabbing = false;
     window.addEventListener("load", start);
     async function start(_event) {
         //Graph|2021-04-27T14:37:44.804Z|93489
@@ -20,7 +22,7 @@ var L03_PhysicsGame;
         root = FudgeCore.Project.resources["Graph|2021-04-27T14:37:44.804Z|93489"];
         //cube 
         cube = new f.Node("Cube");
-        cmpCube = new f.ComponentRigidbody(0.1, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
+        cmpCube = new f.ComponentRigidbody(0.1, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
         cube.addComponent(cmpCube);
         //ball
         ball = root.getChildrenByName("ball")[0];
@@ -65,7 +67,7 @@ var L03_PhysicsGame;
         cmpBall.friction = 1;
     }
     function createCube() {
-        cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(3))));
+        cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(1))));
         cmpCube.restitution = 0.5;
         cmpCube.rotationInfluenceFactor = f.Vector3.ZERO();
         cmpCube.friction = 1;
@@ -78,6 +80,7 @@ var L03_PhysicsGame;
     function update() {
         f.Physics.world.simulate(f.Loop.timeFrameReal / 1000);
         moveAvatar();
+        grabObject();
         viewport.draw();
         f.Physics.settings.debugDraw = true;
     }
@@ -105,6 +108,16 @@ var L03_PhysicsGame;
             cmpAvatar.rotateBody(ƒ.Vector3.Y(-rotate));
         }
     }
+    function grabObject() {
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.F])) {
+            let distance = f.Physics.raycast(cmpAvatar.getPosition(), forward, 2);
+            console.log(distance.hit);
+            if (distance.hit) {
+                avatar.addChild(cube);
+                grabbing = true;
+            }
+        }
+    }
     function hndKeyRelease(_event) {
         if (_event.code == f.KEYBOARD_CODE.W)
             cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, 0));
@@ -114,6 +127,17 @@ var L03_PhysicsGame;
             cmpAvatar.setVelocity(ƒ.Vector3.Y(0));
         if (_event.code == f.KEYBOARD_CODE.D)
             cmpAvatar.setVelocity(ƒ.Vector3.Y(0));
+        if (_event.code == f.KEYBOARD_CODE.F) {
+            if (grabbing) {
+                counter++;
+                if (counter >= 2) {
+                    cmpCube.setPosition(cmpAvatar.getPosition());
+                    root.addChild(cube);
+                    counter = 0;
+                    grabbing = false;
+                }
+            }
+        }
     }
 })(L03_PhysicsGame || (L03_PhysicsGame = {}));
 //# sourceMappingURL=PhysicsGame.js.map

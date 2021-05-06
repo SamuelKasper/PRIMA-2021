@@ -11,6 +11,8 @@ namespace L03_PhysicsGame {
     let cmpCube: f.ComponentRigidbody;
     let ball: f.Node;
     let cmpBall: f.ComponentRigidbody;
+    let counter: number = 0;
+    let grabbing: boolean = false;
 
     window.addEventListener("load", start);
     async function start(_event: Event): Promise<void> {
@@ -21,7 +23,7 @@ namespace L03_PhysicsGame {
 
         //cube 
         cube = new f.Node("Cube");
-        cmpCube = new f.ComponentRigidbody(0.1, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
+        cmpCube = new f.ComponentRigidbody(0.1, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
         cube.addComponent(cmpCube);
         //ball
         ball = root.getChildrenByName("ball")[0];
@@ -74,11 +76,11 @@ namespace L03_PhysicsGame {
     }
 
     function createCube(): void {
-        cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(3))));
+        cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(1))));
         cmpCube.restitution = 0.5;
         cmpCube.rotationInfluenceFactor = f.Vector3.ZERO();
         cmpCube.friction = 1;
-        
+
         let meshCube: f.ComponentMesh = new f.ComponentMesh(new f.MeshCube("cube"));
         cube.addComponent(meshCube);
         let matCube: f.Material = new f.Material("white", f.ShaderUniColor, new f.CoatColored(new f.Color(1, 0, 1, 1)));
@@ -90,6 +92,7 @@ namespace L03_PhysicsGame {
     function update(): void {
         f.Physics.world.simulate(f.Loop.timeFrameReal / 1000);
         moveAvatar();
+        grabObject();
         viewport.draw();
         f.Physics.settings.debugDraw = true;
     }
@@ -121,6 +124,17 @@ namespace L03_PhysicsGame {
         }
     }
 
+    function grabObject(): void {
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.F])) {
+            let distance: f.RayHitInfo = f.Physics.raycast(cmpAvatar.getPosition(), forward, 2);
+            console.log(distance.hit);
+            if (distance.hit) {
+                avatar.addChild(cube);
+                grabbing = true;
+            }
+        }
+    }
+
     function hndKeyRelease(_event: KeyboardEvent): void {
         if (_event.code == f.KEYBOARD_CODE.W)
             cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, 0));
@@ -130,5 +144,17 @@ namespace L03_PhysicsGame {
             cmpAvatar.setVelocity(ƒ.Vector3.Y(0));
         if (_event.code == f.KEYBOARD_CODE.D)
             cmpAvatar.setVelocity(ƒ.Vector3.Y(0));
+
+        if (_event.code == f.KEYBOARD_CODE.F) {
+            if (grabbing) {
+                counter++;
+                if (counter >= 2) {
+                    cmpCube.setPosition(cmpAvatar.getPosition());
+                    root.addChild(cube);
+                    counter = 0;
+                    grabbing = false;
+                }
+            }
+        }
     }
 }
