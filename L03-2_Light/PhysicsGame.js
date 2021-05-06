@@ -67,7 +67,7 @@ var L03_PhysicsGame;
         cmpBall.friction = 1;
     }
     function createCube() {
-        cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(1))));
+        cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(1, 1, 3))));
         cmpCube.restitution = 0.5;
         cmpCube.rotationInfluenceFactor = f.Vector3.ZERO();
         cmpCube.friction = 1;
@@ -80,7 +80,7 @@ var L03_PhysicsGame;
     function update() {
         f.Physics.world.simulate(f.Loop.timeFrameReal / 1000);
         moveAvatar();
-        grabObject();
+        //grabObject();
         viewport.draw();
         f.Physics.settings.debugDraw = true;
     }
@@ -107,15 +107,17 @@ var L03_PhysicsGame;
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
             cmpAvatar.rotateBody(ƒ.Vector3.Y(-rotate));
         }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.F])) {
+            grabObject();
+        }
     }
     function grabObject() {
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.F])) {
-            let distance = f.Physics.raycast(cmpAvatar.getPosition(), forward, 2);
-            console.log(distance.hit);
-            if (distance.hit) {
-                avatar.addChild(cube);
-                grabbing = true;
-            }
+        let distance = f.Physics.raycast(cmpAvatar.getPosition(), forward, 2);
+        if (distance.hit) {
+            cmpCube.physicsType = f.PHYSICS_TYPE.KINEMATIC;
+            cube.mtxLocal.set(f.Matrix4x4.TRANSLATION(f.Vector3.Z(1.5)));
+            avatar.addChild(cube);
+            grabbing = true;
         }
     }
     function hndKeyRelease(_event) {
@@ -131,7 +133,8 @@ var L03_PhysicsGame;
             if (grabbing) {
                 counter++;
                 if (counter >= 2) {
-                    cmpCube.setPosition(cmpAvatar.getPosition());
+                    cmpCube.physicsType = f.PHYSICS_TYPE.DYNAMIC;
+                    //cmpCube.setPosition(cmpAvatar.getPosition());
                     root.addChild(cube);
                     counter = 0;
                     grabbing = false;
