@@ -7,7 +7,10 @@ namespace L03_PhysicsGame {
     let avatar: f.Node;
     let cmpCamera: f.ComponentCamera = new f.ComponentCamera();
     let forward: ƒ.Vector3;
-
+    let cube: f.Node;
+    let cmpCube: f.ComponentRigidbody;
+    let ball: f.Node;
+    let cmpBall: f.ComponentRigidbody;
 
     window.addEventListener("load", start);
     async function start(_event: Event): Promise<void> {
@@ -16,9 +19,19 @@ namespace L03_PhysicsGame {
         FudgeCore.Debug.log("Project:", FudgeCore.Project.resources);
         root = <f.Graph>FudgeCore.Project.resources["Graph|2021-04-27T14:37:44.804Z|93489"];
 
+        //cube 
+        cube = new f.Node("Cube");
+        cmpCube = new f.ComponentRigidbody(0.1, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
+        cube.addComponent(cmpCube);
+        //ball
+        ball = root.getChildrenByName("ball")[0];
+        cmpBall = new f.ComponentRigidbody(0.2, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.SPHERE, f.PHYSICS_GROUP.DEFAULT);
+        ball.addComponent(cmpBall);
+
         createAvatar();
         createRigidbodies();
         createBall();
+        createCube();
         cmpCamera.mtxPivot.translateX(0);
         cmpCamera.mtxPivot.translateZ(20);
         cmpCamera.mtxPivot.translateY(10);
@@ -55,13 +68,23 @@ namespace L03_PhysicsGame {
     }
 
     function createBall(): void {
-        let ball: f.Node = root.getChildrenByName("ball")[0];
-        let cmpBall: f.ComponentRigidbody = new f.ComponentRigidbody(0.5, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.SPHERE, f.PHYSICS_GROUP.DEFAULT);
         cmpBall.restitution = 0.5;
         cmpBall.rotationInfluenceFactor = f.Vector3.ZERO();
         cmpBall.friction = 1;
-        ball.addComponent(cmpBall);
+    }
 
+    function createCube(): void {
+        cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(3))));
+        cmpCube.restitution = 0.5;
+        cmpCube.rotationInfluenceFactor = f.Vector3.ZERO();
+        cmpCube.friction = 1;
+        
+        let meshCube: f.ComponentMesh = new f.ComponentMesh(new f.MeshCube("cube"));
+        cube.addComponent(meshCube);
+        let matCube: f.Material = new f.Material("white", f.ShaderUniColor, new f.CoatColored(new f.Color(1, 0, 1, 1)));
+        cube.addComponent(new f.ComponentMaterial(matCube));
+
+        root.appendChild(cube);
     }
 
     function update(): void {
