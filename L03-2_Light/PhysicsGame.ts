@@ -6,6 +6,8 @@ namespace L03_PhysicsGame {
     let viewport: f.Viewport;
     let avatar: f.Node;
     let cmpCamera: f.ComponentCamera = new f.ComponentCamera();
+    let forward: ƒ.Vector3;
+
 
     window.addEventListener("load", start);
     async function start(_event: Event): Promise<void> {
@@ -25,6 +27,7 @@ namespace L03_PhysicsGame {
         //first person
         //cmpCamera.mtxPivot.translateY(1);
 
+        document.addEventListener("keyup", hndKeyRelease);
         let canvas: HTMLCanvasElement = document.querySelector("canvas");
         viewport = new f.Viewport();
         viewport.initialize("Viewport", root, cmpCamera, canvas);
@@ -58,7 +61,7 @@ namespace L03_PhysicsGame {
         cmpBall.rotationInfluenceFactor = f.Vector3.ZERO();
         cmpBall.friction = 1;
         ball.addComponent(cmpBall);
-    
+
     }
 
     function update(): void {
@@ -77,24 +80,32 @@ namespace L03_PhysicsGame {
     }
 
     function moveAvatar(): void {
-        let speed: number = 15;
+        let speed: number = 10;
         let rotate: number = 5;
-        let forward: ƒ.Vector3;
         forward = avatar.mtxWorld.getZ();
 
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
             cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, - speed));
-        } else
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
-                cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, speed));
-            } else
-                if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
-                    cmpAvatar.rotateBody(ƒ.Vector3.Y(rotate));
-                } else
-                    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
-                        cmpAvatar.rotateBody(ƒ.Vector3.Y(-rotate));
-                    } else {
-                        //cmpAvatar.setVelocity(f.Vector3.SCALE(forward, 0));
-                    }
+        }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
+            cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, speed));
+        }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
+            cmpAvatar.rotateBody(ƒ.Vector3.Y(rotate));
+        }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
+            cmpAvatar.rotateBody(ƒ.Vector3.Y(-rotate));
+        }
+    }
+
+    function hndKeyRelease(_event: KeyboardEvent): void {
+        if (_event.code == f.KEYBOARD_CODE.W)
+            cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, 0));
+        if (_event.code == f.KEYBOARD_CODE.S)
+            cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, 0));
+        if (_event.code == f.KEYBOARD_CODE.A)
+            cmpAvatar.setVelocity(ƒ.Vector3.Y(0));
+        if (_event.code == f.KEYBOARD_CODE.D)
+            cmpAvatar.setVelocity(ƒ.Vector3.Y(0));
     }
 }

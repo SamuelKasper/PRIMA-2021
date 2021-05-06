@@ -7,6 +7,7 @@ var L03_PhysicsGame;
     let viewport;
     let avatar;
     let cmpCamera = new f.ComponentCamera();
+    let forward;
     window.addEventListener("load", start);
     async function start(_event) {
         //Graph|2021-04-27T14:37:44.804Z|93489
@@ -22,6 +23,7 @@ var L03_PhysicsGame;
         cmpCamera.mtxPivot.lookAt(f.Vector3.ZERO());
         //first person
         //cmpCamera.mtxPivot.translateY(1);
+        document.addEventListener("keyup", hndKeyRelease);
         let canvas = document.querySelector("canvas");
         viewport = new f.Viewport();
         viewport.initialize("Viewport", root, cmpCamera, canvas);
@@ -66,25 +68,31 @@ var L03_PhysicsGame;
         }
     }
     function moveAvatar() {
-        let speed = 15;
+        let speed = 10;
         let rotate = 5;
-        let forward;
         forward = avatar.mtxWorld.getZ();
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
             cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, -speed));
         }
-        else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
             cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, speed));
         }
-        else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
             cmpAvatar.rotateBody(ƒ.Vector3.Y(rotate));
         }
-        else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
             cmpAvatar.rotateBody(ƒ.Vector3.Y(-rotate));
         }
-        else {
-            //cmpAvatar.setVelocity(f.Vector3.SCALE(forward, 0));
-        }
+    }
+    function hndKeyRelease(_event) {
+        if (_event.code == f.KEYBOARD_CODE.W)
+            cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, 0));
+        if (_event.code == f.KEYBOARD_CODE.S)
+            cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, 0));
+        if (_event.code == f.KEYBOARD_CODE.A)
+            cmpAvatar.setVelocity(ƒ.Vector3.Y(0));
+        if (_event.code == f.KEYBOARD_CODE.D)
+            cmpAvatar.setVelocity(ƒ.Vector3.Y(0));
     }
 })(L03_PhysicsGame || (L03_PhysicsGame = {}));
 //# sourceMappingURL=PhysicsGame.js.map
