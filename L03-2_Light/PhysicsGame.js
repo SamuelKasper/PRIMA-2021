@@ -32,12 +32,14 @@ var L03_PhysicsGame;
         createRigidbodies();
         createBall();
         createCube();
-        cmpCamera.mtxPivot.translateX(0);
-        cmpCamera.mtxPivot.translateZ(20);
-        cmpCamera.mtxPivot.translateY(10);
-        cmpCamera.mtxPivot.lookAt(f.Vector3.ZERO());
+        //cmpCamera.mtxPivot.translateX(0);
+        //cmpCamera.mtxPivot.translateZ(20);
+        //cmpCamera.mtxPivot.translateY(10);
+        //cmpCamera.mtxPivot.lookAt(f.Vector3.ZERO());
         //first person
-        //cmpCamera.mtxPivot.translateY(1);
+        cmpCamera.mtxPivot.translateY(1);
+        cmpCamera.mtxPivot.rotateY(180);
+        cmpCamera.mtxPivot.rotateX(5);
         document.addEventListener("keyup", hndKeyRelease);
         let canvas = document.querySelector("canvas");
         viewport = new f.Viewport();
@@ -52,10 +54,6 @@ var L03_PhysicsGame;
         cmpAvatar.rotationInfluenceFactor = f.Vector3.ZERO();
         cmpAvatar.friction = 1;
         avatar = new f.Node("Avatar");
-        //let meshAvatar: f.ComponentMesh = new f.ComponentMesh(new f.MeshQuad("quad"));
-        //avatar.addComponent(meshAvatar);
-        //let matAvatar: f.Material = new f.Material("white", f.ShaderUniColor, new f.CoatColored(new f.Color(1, 0, 1, 1)));
-        //avatar.addComponent(new f.ComponentMaterial(matAvatar));
         avatar.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(3))));
         avatar.addComponent(cmpAvatar);
         avatar.addComponent(cmpCamera);
@@ -80,7 +78,6 @@ var L03_PhysicsGame;
     function update() {
         f.Physics.world.simulate(f.Loop.timeFrameReal / 1000);
         moveAvatar();
-        //grabObject();
         viewport.draw();
         f.Physics.settings.debugDraw = true;
     }
@@ -93,7 +90,7 @@ var L03_PhysicsGame;
     }
     function moveAvatar() {
         let speed = 10;
-        let rotate = 5;
+        let rotate = 3;
         forward = avatar.mtxWorld.getZ();
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
             cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, -speed));
@@ -111,11 +108,19 @@ var L03_PhysicsGame;
             grabObject();
         }
     }
+    //L10 Doom Mouse
+    //canvas.addEventListener("click",canvas.requestPointerLock);
     function grabObject() {
-        let distance = f.Physics.raycast(cmpAvatar.getPosition(), forward, 2);
-        if (distance.hit) {
+        /*Abstand zwischen spieler und Objekt
+        let distance: f.Vector3 = f.Vector3.DIFFERENCE(cmpAvatar.getPosition(), cmpCube.getPosition());
+        console.log(distance.magnitude);*/
+        forward.z = -forward.z;
+        forward.x = -forward.x;
+        forward.y = -forward.y;
+        let rayhit = f.Physics.raycast(cmpAvatar.getPosition(), forward, 2);
+        if (rayhit.hit) {
             cmpCube.physicsType = f.PHYSICS_TYPE.KINEMATIC;
-            cube.mtxLocal.set(f.Matrix4x4.TRANSLATION(f.Vector3.Z(1.5)));
+            cube.mtxLocal.set(f.Matrix4x4.TRANSLATION(f.Vector3.Z(-1.5)));
             avatar.addChild(cube);
             grabbing = true;
         }
@@ -134,7 +139,6 @@ var L03_PhysicsGame;
                 counter++;
                 if (counter >= 2) {
                     cmpCube.physicsType = f.PHYSICS_TYPE.DYNAMIC;
-                    //cmpCube.setPosition(cmpAvatar.getPosition());
                     root.addChild(cube);
                     counter = 0;
                     grabbing = false;
