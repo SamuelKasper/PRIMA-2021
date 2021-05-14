@@ -15,6 +15,8 @@ var L03_PhysicsGame;
     let counter = 0;
     let grabbing = false;
     let cmpAudio;
+    let ctrRotation = new f.Control("AvatarRot", -0.1, 0 /* PROPORTIONAL */);
+    ctrRotation.setDelay(100);
     window.addEventListener("load", start);
     async function start(_event) {
         //Graph|2021-04-27T14:37:44.804Z|93489
@@ -33,16 +35,13 @@ var L03_PhysicsGame;
         createRigidbodies();
         createBall();
         createCube();
-        cmpCamera.mtxPivot.translateZ(20);
-        cmpCamera.mtxPivot.translateY(10);
-        cmpCamera.mtxPivot.lookAt(f.Vector3.ZERO());
         //first person
-        /*
         cmpCamera.mtxPivot.translateY(1);
         cmpCamera.mtxPivot.rotateY(180);
-        cmpCamera.mtxPivot.rotateX(5);*/
+        cmpCamera.mtxPivot.rotateX(5);
         document.addEventListener("keyup", hndKeyRelease);
         let canvas = document.querySelector("canvas");
+        canvas.addEventListener("mousemove", hndMouse);
         //Audio
         let audioTetris = new f.Audio("Audio/tetris.mp3");
         cmpAudio = new f.ComponentAudio(audioTetris, true, true);
@@ -53,6 +52,9 @@ var L03_PhysicsGame;
         f.Physics.adjustTransforms(root, true);
         f.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         f.Loop.start();
+    }
+    function hndMouse(_event) {
+        ctrRotation.setInput(_event.movementX);
     }
     function createAvatar() {
         cmpAvatar = new f.ComponentRigidbody(0.1, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.CAPSULE, f.PHYSICS_GROUP.DEFAULT);
@@ -84,6 +86,8 @@ var L03_PhysicsGame;
     function update() {
         f.Physics.world.simulate(f.Loop.timeFrameReal / 1000);
         moveAvatar();
+        moveAvatarWithMouse(ctrRotation.getOutput());
+        //ctrRotation.setInput(0);
         isGrabbing();
         viewport.draw();
         f.Physics.settings.debugDraw = true;
@@ -102,6 +106,9 @@ var L03_PhysicsGame;
             let cmpRigidbody = new f.ComponentRigidbody(0, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
             node.addComponent(cmpRigidbody);
         }
+    }
+    function moveAvatarWithMouse(_rotation) {
+        avatar.mtxLocal.rotateY(_rotation);
     }
     function moveAvatar() {
         let speed = 10;

@@ -14,6 +14,8 @@ namespace L03_PhysicsGame {
     let counter: number = 0;
     let grabbing: boolean = false;
     let cmpAudio: f.ComponentAudio;
+    let ctrRotation: f.Control = new f.Control("AvatarRot", -0.1, f.CONTROL_TYPE.PROPORTIONAL);
+    ctrRotation.setDelay(100);
 
     window.addEventListener("load", start);
     async function start(_event: Event): Promise<void> {
@@ -36,20 +38,16 @@ namespace L03_PhysicsGame {
         createBall();
         createCube();
 
-        cmpCamera.mtxPivot.translateZ(20);
-        cmpCamera.mtxPivot.translateY(10);
-        cmpCamera.mtxPivot.lookAt(f.Vector3.ZERO());
-
         //first person
-        /*
         cmpCamera.mtxPivot.translateY(1);
         cmpCamera.mtxPivot.rotateY(180);
-        cmpCamera.mtxPivot.rotateX(5);*/
+        cmpCamera.mtxPivot.rotateX(5);
 
 
         document.addEventListener("keyup", hndKeyRelease);
 
         let canvas: HTMLCanvasElement = document.querySelector("canvas");
+        canvas.addEventListener("mousemove", hndMouse);
 
         //Audio
         let audioTetris: f.Audio = new f.Audio("Audio/tetris.mp3");
@@ -62,6 +60,10 @@ namespace L03_PhysicsGame {
         f.Physics.adjustTransforms(root, true);
         f.Loop.addEventListener(f.EVENT.LOOP_FRAME, update);
         f.Loop.start();
+    }
+
+    function hndMouse(_event: MouseEvent): void {
+        ctrRotation.setInput(_event.movementX);
     }
 
     function createAvatar(): void {
@@ -101,6 +103,8 @@ namespace L03_PhysicsGame {
     function update(): void {
         f.Physics.world.simulate(f.Loop.timeFrameReal / 1000);
         moveAvatar();
+        moveAvatarWithMouse(ctrRotation.getOutput());
+        //ctrRotation.setInput(0);
         isGrabbing();
         viewport.draw();
         f.Physics.settings.debugDraw = true;
@@ -120,6 +124,10 @@ namespace L03_PhysicsGame {
             let cmpRigidbody: f.ComponentRigidbody = new f.ComponentRigidbody(0, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
             node.addComponent(cmpRigidbody);
         }
+    }
+
+    function moveAvatarWithMouse(_rotation: number): void {
+        avatar.mtxLocal.rotateY(_rotation);
     }
 
     function moveAvatar(): void {
