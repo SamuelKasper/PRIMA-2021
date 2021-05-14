@@ -13,6 +13,7 @@ namespace L03_PhysicsGame {
     let cmpBall: f.ComponentRigidbody;
     let counter: number = 0;
     let grabbing: boolean = false;
+    let cmpAudio: f.ComponentAudio;
 
     window.addEventListener("load", start);
     async function start(_event: Event): Promise<void> {
@@ -34,18 +35,28 @@ namespace L03_PhysicsGame {
         createRigidbodies();
         createBall();
         createCube();
-        //cmpCamera.mtxPivot.translateX(0);
-        //cmpCamera.mtxPivot.translateZ(20);
-        //cmpCamera.mtxPivot.translateY(10);
-        //cmpCamera.mtxPivot.lookAt(f.Vector3.ZERO());
+
+        cmpCamera.mtxPivot.translateZ(20);
+        cmpCamera.mtxPivot.translateY(10);
+        cmpCamera.mtxPivot.lookAt(f.Vector3.ZERO());
 
         //first person
+        /*
         cmpCamera.mtxPivot.translateY(1);
         cmpCamera.mtxPivot.rotateY(180);
-        cmpCamera.mtxPivot.rotateX(5);
+        cmpCamera.mtxPivot.rotateX(5);*/
+
 
         document.addEventListener("keyup", hndKeyRelease);
+
         let canvas: HTMLCanvasElement = document.querySelector("canvas");
+
+        //Audio
+        let audioTetris: f.Audio = new f.Audio("Audio/tetris.mp3");
+        cmpAudio = new f.ComponentAudio(audioTetris, true, true);
+        cube.addComponent(cmpAudio);
+
+        //Viewport
         viewport = new f.Viewport();
         viewport.initialize("Viewport", root, cmpCamera, canvas);
         f.Physics.adjustTransforms(root, true);
@@ -90,8 +101,17 @@ namespace L03_PhysicsGame {
     function update(): void {
         f.Physics.world.simulate(f.Loop.timeFrameReal / 1000);
         moveAvatar();
+        isGrabbing();
         viewport.draw();
         f.Physics.settings.debugDraw = true;
+    }
+
+    function isGrabbing(): void {
+        if (grabbing) {
+            f.AudioManager.default.listenTo(cube);
+        } else {
+            f.AudioManager.default.listenTo(ball);
+        }
     }
 
     function createRigidbodies(): void {
@@ -124,9 +144,6 @@ namespace L03_PhysicsGame {
         }
     }
 
-    //L10 Doom Mouse
-    //canvas.addEventListener("click",canvas.requestPointerLock);
-
     function grabObject(): void {
         /*Abstand zwischen spieler und Objekt
         let distance: f.Vector3 = f.Vector3.DIFFERENCE(cmpAvatar.getPosition(), cmpCube.getPosition());
@@ -134,7 +151,7 @@ namespace L03_PhysicsGame {
         forward.z = -forward.z;
         forward.x = -forward.x;
         forward.y = - forward.y;
-        let rayhit: f.RayHitInfo = f.Physics.raycast(cmpAvatar.getPosition(), forward, 2);
+        let rayhit: f.RayHitInfo = f.Physics.raycast(cmpAvatar.getPosition(), forward, 3);
         if (rayhit.hit) {
             cmpCube.physicsType = f.PHYSICS_TYPE.KINEMATIC;
             cube.mtxLocal.set(f.Matrix4x4.TRANSLATION(f.Vector3.Z(-1.5)));
