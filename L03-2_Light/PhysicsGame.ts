@@ -18,6 +18,30 @@ namespace L03_PhysicsGame {
     ctrRotation.setDelay(100);
 
     window.addEventListener("load", start);
+
+    //ScriptComponent
+    export class ComponentScriptTest extends f.ComponentScript {
+        constructor() {
+            super();
+            console.log("test create");
+            this.addEventListener(f.EVENT.COMPONENT_ADD, this.hndComponentAdd);
+            f.Time.game.setTimer(1000, 0, this.hndTimer);
+        }
+
+        public hndTimer = (_event: f.EventTimer): void => {
+            let body: f.ComponentRigidbody = this.getContainer().getComponent(f.ComponentRigidbody);
+            if (f.Random.default.getRangeFloored(0, 5) == 0) {
+                body.applyLinearImpulse(f.Vector3.Y(5));
+            }
+        }
+
+        public hndComponentAdd(_event: Event): void {
+            console.log("compAdd");
+            //this.getContainer().addEventListener(f.EVENT.RENDER_PREPARE, (_event: Event): void => console.log("render"));
+        }
+    }//ScriptComponent End
+
+
     async function start(_event: Event): Promise<void> {
         //Graph|2021-04-27T14:37:44.804Z|93489
         await FudgeCore.Project.loadResourcesFromHTML();
@@ -87,6 +111,10 @@ namespace L03_PhysicsGame {
     }
 
     function createCube(): void {
+        //script componente
+        cube.addComponent(new ComponentScriptTest);
+
+        //cube stuff
         cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(1, 1, 3))));
         cmpCube.restitution = 0.5;
         cmpCube.rotationInfluenceFactor = f.Vector3.ZERO();
@@ -113,8 +141,10 @@ namespace L03_PhysicsGame {
     function isGrabbing(): void {
         if (grabbing) {
             f.AudioManager.default.listenTo(cube);
+            //cmpAudio.play(true);
         } else {
             f.AudioManager.default.listenTo(ball);
+            //cmpAudio.play(false);
         }
     }
 

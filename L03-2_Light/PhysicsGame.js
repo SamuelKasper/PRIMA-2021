@@ -18,6 +18,26 @@ var L03_PhysicsGame;
     let ctrRotation = new f.Control("AvatarRot", -0.1, 0 /* PROPORTIONAL */);
     ctrRotation.setDelay(100);
     window.addEventListener("load", start);
+    //ScriptComponent
+    class ComponentScriptTest extends f.ComponentScript {
+        constructor() {
+            super();
+            this.hndTimer = (_event) => {
+                let body = this.getContainer().getComponent(f.ComponentRigidbody);
+                if (f.Random.default.getRangeFloored(0, 5) == 0) {
+                    body.applyLinearImpulse(f.Vector3.Y(5));
+                }
+            };
+            console.log("test create");
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndComponentAdd);
+            f.Time.game.setTimer(1000, 0, this.hndTimer);
+        }
+        hndComponentAdd(_event) {
+            console.log("compAdd");
+            //this.getContainer().addEventListener(f.EVENT.RENDER_PREPARE, (_event: Event): void => console.log("render"));
+        }
+    } //ScriptComponent End
+    L03_PhysicsGame.ComponentScriptTest = ComponentScriptTest;
     async function start(_event) {
         //Graph|2021-04-27T14:37:44.804Z|93489
         await FudgeCore.Project.loadResourcesFromHTML();
@@ -73,6 +93,9 @@ var L03_PhysicsGame;
         cmpBall.friction = 1;
     }
     function createCube() {
+        //script componente
+        cube.addComponent(new ComponentScriptTest);
+        //cube stuff
         cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(1, 1, 3))));
         cmpCube.restitution = 0.5;
         cmpCube.rotationInfluenceFactor = f.Vector3.ZERO();
@@ -95,9 +118,11 @@ var L03_PhysicsGame;
     function isGrabbing() {
         if (grabbing) {
             f.AudioManager.default.listenTo(cube);
+            //cmpAudio.play(true);
         }
         else {
             f.AudioManager.default.listenTo(ball);
+            //cmpAudio.play(false);
         }
     }
     function createRigidbodies() {
