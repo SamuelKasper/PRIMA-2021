@@ -74,6 +74,7 @@ var L03_PhysicsGame;
         viewport.initialize("Viewport", root, cmpCamera, canvas);
         f.Physics.adjustTransforms(root, true);
         f.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
+        L03_PhysicsGame.Hud.start();
         f.Loop.start();
     }
     function hndMouse(_event) {
@@ -189,6 +190,7 @@ var L03_PhysicsGame;
             avatar.addChild(cube);
             grabbing = true;
         }
+        L03_PhysicsGame.gameState.hits++;
     }
     function hndKeyRelease(_event) {
         if (_event.code == f.KEYBOARD_CODE.W)

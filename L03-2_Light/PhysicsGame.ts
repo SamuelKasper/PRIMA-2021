@@ -88,6 +88,7 @@ namespace L03_PhysicsGame {
         viewport.initialize("Viewport", root, cmpCamera, canvas);
         f.Physics.adjustTransforms(root, true);
         f.Loop.addEventListener(f.EVENT.LOOP_FRAME, update);
+        Hud.start();
         f.Loop.start();
     }
 
@@ -219,6 +220,8 @@ namespace L03_PhysicsGame {
             avatar.addChild(cube);
             grabbing = true;
         }
+
+        gameState.hits++;
     }
 
     function hndKeyRelease(_event: KeyboardEvent): void {
@@ -243,5 +246,7 @@ namespace L03_PhysicsGame {
             }
         }
     }
+
+
 
 }
