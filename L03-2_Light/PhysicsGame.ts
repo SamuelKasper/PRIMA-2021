@@ -7,10 +7,16 @@ namespace L03_PhysicsGame {
     let avatar: f.Node;
     let cmpCamera: f.ComponentCamera = new f.ComponentCamera();
     let forward: ƒ.Vector3;
+
     let cube: f.Node;
     let cmpCube: f.ComponentRigidbody;
+
     let ball: f.Node;
     let cmpBall: f.ComponentRigidbody;
+
+    let pyramide: f.Node;
+    let cmpPyramide: f.ComponentRigidbody;
+
     let counter: number = 0;
     let grabbing: boolean = false;
     let cmpAudio: f.ComponentAudio;
@@ -19,43 +25,42 @@ namespace L03_PhysicsGame {
 
     window.addEventListener("load", start);
 
-    //ScriptComponent
+    //ScriptComponentRot
     export class ComponentScriptTest extends f.ComponentScript {
         constructor() {
+            //construktor der superklasse aufrufen
             super();
-            console.log("test create");
-            this.addEventListener(f.EVENT.COMPONENT_ADD, this.hndComponentAdd);
-            f.Time.game.setTimer(1000, 0, this.hndTimer);
+            f.Time.game.setTimer(100, 0, this.hndTimer);
+        }
+
+        public hndTimer = (_event: f.EventTimer): void => {
+            console.log("rotate");
+            let body: f.ComponentRigidbody = this.getContainer().getComponent(f.ComponentRigidbody);
+            body.rotateBody(f.Vector3.Y(5));
+        }
+    }//ScriptComponentRot End
+
+    //ScriptComponentJump
+    export class ComponentScriptJump extends f.ComponentScript {
+        constructor() {
+            //construktor der superklasse aufrufen
+            super();
+            f.Time.game.setTimer(2000, 0, this.hndTimer);
         }
 
         public hndTimer = (_event: f.EventTimer): void => {
             let body: f.ComponentRigidbody = this.getContainer().getComponent(f.ComponentRigidbody);
-            if (f.Random.default.getRangeFloored(0, 5) == 0) {
+            if (f.Random.default.getRangeFloored(0, 1) == 0) {
                 body.applyLinearImpulse(f.Vector3.Y(5));
             }
         }
-
-        public hndComponentAdd(_event: Event): void {
-            console.log("compAdd");
-            //this.getContainer().addEventListener(f.EVENT.RENDER_PREPARE, (_event: Event): void => console.log("render"));
-        }
-    }//ScriptComponent End
-
+    }//ScriptComponentJump End
 
     async function start(_event: Event): Promise<void> {
         //Graph|2021-04-27T14:37:44.804Z|93489
         await FudgeCore.Project.loadResourcesFromHTML();
         FudgeCore.Debug.log("Project:", FudgeCore.Project.resources);
         root = <f.Graph>FudgeCore.Project.resources["Graph|2021-04-27T14:37:44.804Z|93489"];
-
-        //cube 
-        cube = new f.Node("Cube");
-        cmpCube = new f.ComponentRigidbody(0.1, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
-        cube.addComponent(cmpCube);
-        //ball
-        ball = root.getChildrenByName("ball")[0];
-        cmpBall = new f.ComponentRigidbody(0.2, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.SPHERE, f.PHYSICS_GROUP.DEFAULT);
-        ball.addComponent(cmpBall);
 
         createAvatar();
         createRigidbodies();
@@ -111,9 +116,6 @@ namespace L03_PhysicsGame {
     }
 
     function createCube(): void {
-        //script componente
-        cube.addComponent(new ComponentScriptTest);
-
         //cube stuff
         cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(1, 1, 3))));
         cmpCube.restitution = 0.5;
@@ -154,6 +156,27 @@ namespace L03_PhysicsGame {
             let cmpRigidbody: f.ComponentRigidbody = new f.ComponentRigidbody(0, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
             node.addComponent(cmpRigidbody);
         }
+        //Moveables
+        let movable: f.Node = root.getChildrenByName("Movable")[0];
+        //cube 
+        cube = new f.Node("Cube");
+        cmpCube = new f.ComponentRigidbody(1, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
+        cube.addComponent(cmpCube);
+        //ball
+        ball = movable.getChildrenByName("ball")[0];
+        cmpBall = new f.ComponentRigidbody(1, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.SPHERE, f.PHYSICS_GROUP.DEFAULT);
+        cmpBall.restitution = 0.8;
+        cmpBall.friction = 2.5;
+        ball.addComponent(new ComponentScriptJump);
+        ball.addComponent(cmpBall);
+        //pyramid
+        pyramide = movable.getChildrenByName("Pyramide")[0];
+        cmpPyramide = new f.ComponentRigidbody(1, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.PYRAMID, f.PHYSICS_GROUP.DEFAULT);
+        cmpPyramide.restitution = 0.8;
+        cmpPyramide.friction = 2.5;
+        //script componente
+        pyramide.addComponent(new ComponentScriptTest);
+        pyramide.addComponent(cmpPyramide);
     }
 
     function moveAvatarWithMouse(_rotation: number): void {
@@ -220,4 +243,5 @@ namespace L03_PhysicsGame {
             }
         }
     }
+
 }

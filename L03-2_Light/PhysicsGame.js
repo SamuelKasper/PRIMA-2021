@@ -12,45 +12,48 @@ var L03_PhysicsGame;
     let cmpCube;
     let ball;
     let cmpBall;
+    let pyramide;
+    let cmpPyramide;
     let counter = 0;
     let grabbing = false;
     let cmpAudio;
     let ctrRotation = new f.Control("AvatarRot", -0.1, 0 /* PROPORTIONAL */);
     ctrRotation.setDelay(100);
     window.addEventListener("load", start);
-    //ScriptComponent
+    //ScriptComponentRot
     class ComponentScriptTest extends f.ComponentScript {
         constructor() {
+            //construktor der superklasse aufrufen
+            super();
+            this.hndTimer = (_event) => {
+                console.log("rotate");
+                let body = this.getContainer().getComponent(f.ComponentRigidbody);
+                body.rotateBody(f.Vector3.Y(5));
+            };
+            f.Time.game.setTimer(100, 0, this.hndTimer);
+        }
+    } //ScriptComponentRot End
+    L03_PhysicsGame.ComponentScriptTest = ComponentScriptTest;
+    //ScriptComponentJump
+    class ComponentScriptJump extends f.ComponentScript {
+        constructor() {
+            //construktor der superklasse aufrufen
             super();
             this.hndTimer = (_event) => {
                 let body = this.getContainer().getComponent(f.ComponentRigidbody);
-                if (f.Random.default.getRangeFloored(0, 5) == 0) {
+                if (f.Random.default.getRangeFloored(0, 1) == 0) {
                     body.applyLinearImpulse(f.Vector3.Y(5));
                 }
             };
-            console.log("test create");
-            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndComponentAdd);
-            f.Time.game.setTimer(1000, 0, this.hndTimer);
+            f.Time.game.setTimer(2000, 0, this.hndTimer);
         }
-        hndComponentAdd(_event) {
-            console.log("compAdd");
-            //this.getContainer().addEventListener(f.EVENT.RENDER_PREPARE, (_event: Event): void => console.log("render"));
-        }
-    } //ScriptComponent End
-    L03_PhysicsGame.ComponentScriptTest = ComponentScriptTest;
+    } //ScriptComponentJump End
+    L03_PhysicsGame.ComponentScriptJump = ComponentScriptJump;
     async function start(_event) {
         //Graph|2021-04-27T14:37:44.804Z|93489
         await FudgeCore.Project.loadResourcesFromHTML();
         FudgeCore.Debug.log("Project:", FudgeCore.Project.resources);
         root = FudgeCore.Project.resources["Graph|2021-04-27T14:37:44.804Z|93489"];
-        //cube 
-        cube = new f.Node("Cube");
-        cmpCube = new f.ComponentRigidbody(0.1, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
-        cube.addComponent(cmpCube);
-        //ball
-        ball = root.getChildrenByName("ball")[0];
-        cmpBall = new f.ComponentRigidbody(0.2, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.SPHERE, f.PHYSICS_GROUP.DEFAULT);
-        ball.addComponent(cmpBall);
         createAvatar();
         createRigidbodies();
         createBall();
@@ -93,8 +96,6 @@ var L03_PhysicsGame;
         cmpBall.friction = 1;
     }
     function createCube() {
-        //script componente
-        cube.addComponent(new ComponentScriptTest);
         //cube stuff
         cube.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(1, 1, 3))));
         cmpCube.restitution = 0.5;
@@ -131,6 +132,27 @@ var L03_PhysicsGame;
             let cmpRigidbody = new f.ComponentRigidbody(0, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
             node.addComponent(cmpRigidbody);
         }
+        //Moveables
+        let movable = root.getChildrenByName("Movable")[0];
+        //cube 
+        cube = new f.Node("Cube");
+        cmpCube = new f.ComponentRigidbody(1, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
+        cube.addComponent(cmpCube);
+        //ball
+        ball = movable.getChildrenByName("ball")[0];
+        cmpBall = new f.ComponentRigidbody(1, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.SPHERE, f.PHYSICS_GROUP.DEFAULT);
+        cmpBall.restitution = 0.8;
+        cmpBall.friction = 2.5;
+        ball.addComponent(new ComponentScriptJump);
+        ball.addComponent(cmpBall);
+        //pyramid
+        pyramide = movable.getChildrenByName("Pyramide")[0];
+        cmpPyramide = new f.ComponentRigidbody(1, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.PYRAMID, f.PHYSICS_GROUP.DEFAULT);
+        cmpPyramide.restitution = 0.8;
+        cmpPyramide.friction = 2.5;
+        //script componente
+        pyramide.addComponent(new ComponentScriptTest);
+        pyramide.addComponent(cmpPyramide);
     }
     function moveAvatarWithMouse(_rotation) {
         avatar.mtxLocal.rotateY(_rotation);
