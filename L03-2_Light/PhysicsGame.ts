@@ -110,9 +110,9 @@ namespace L03_PhysicsGame {
     }
 
     function createBall(): void {
-        cmpBall.restitution = 0.5;
         cmpBall.rotationInfluenceFactor = f.Vector3.ZERO();
-        cmpBall.friction = 1;
+        cmpBall.restitution = 0.8;
+        cmpBall.friction = 2.5;
     }
 
     function createCube(): void {
@@ -162,13 +162,13 @@ namespace L03_PhysicsGame {
         cube = new f.Node("Cube");
         cmpCube = new f.ComponentRigidbody(1, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.CUBE, f.PHYSICS_GROUP.DEFAULT);
         cube.addComponent(cmpCube);
+        
         //ball
         ball = movable.getChildrenByName("ball")[0];
         cmpBall = new f.ComponentRigidbody(1, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.SPHERE, f.PHYSICS_GROUP.DEFAULT);
-        cmpBall.restitution = 0.8;
-        cmpBall.friction = 2.5;
         ball.addComponent(new ComponentScriptJump);
         ball.addComponent(cmpBall);
+        
         //pyramid
         pyramide = movable.getChildrenByName("Pyramide")[0];
         cmpPyramide = new f.ComponentRigidbody(1, f.PHYSICS_TYPE.STATIC, f.COLLIDER_TYPE.PYRAMID, f.PHYSICS_GROUP.DEFAULT);

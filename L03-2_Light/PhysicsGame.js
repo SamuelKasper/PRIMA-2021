@@ -91,9 +91,9 @@ var L03_PhysicsGame;
         root.appendChild(avatar);
     }
     function createBall() {
-        cmpBall.restitution = 0.5;
         cmpBall.rotationInfluenceFactor = f.Vector3.ZERO();
-        cmpBall.friction = 1;
+        cmpBall.restitution = 0.8;
+        cmpBall.friction = 2.5;
     }
     function createCube() {
         //cube stuff
@@ -141,8 +141,6 @@ var L03_PhysicsGame;
         //ball
         ball = movable.getChildrenByName("ball")[0];
         cmpBall = new f.ComponentRigidbody(1, f.PHYSICS_TYPE.DYNAMIC, f.COLLIDER_TYPE.SPHERE, f.PHYSICS_GROUP.DEFAULT);
-        cmpBall.restitution = 0.8;
-        cmpBall.friction = 2.5;
         ball.addComponent(new ComponentScriptJump);
         ball.addComponent(cmpBall);
         //pyramid
