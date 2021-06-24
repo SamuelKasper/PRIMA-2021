@@ -26,7 +26,6 @@ var L03_PhysicsGame;
             //construktor der superklasse aufrufen
             super();
             this.hndTimer = (_event) => {
-                console.log("rotate");
                 let body = this.getContainer().getComponent(f.ComponentRigidbody);
                 body.rotateBody(f.Vector3.Y(5));
             };
@@ -50,6 +49,9 @@ var L03_PhysicsGame;
     } //ScriptComponentJump End
     L03_PhysicsGame.ComponentScriptJump = ComponentScriptJump;
     async function start(_event) {
+        let resp = await fetch("https://webuser.hs-furtwangen.de/~kaspersa/PRIMA/jsonrequest.php");
+        let json = await resp.json();
+        console.log(json);
         //Graph|2021-04-27T14:37:44.804Z|93489
         await FudgeCore.Project.loadResourcesFromHTML();
         FudgeCore.Debug.log("Project:", FudgeCore.Project.resources);
